@@ -16,6 +16,8 @@ interface QuoteData {
   property_size: string;
   employee_count: number;
   bin_count: number;
+  bin_collection_frequency?: string;
+  needs_bin_rental?: boolean;
   estimated_cost: number;
   special_requirements: string;
   additional_services: string[];
@@ -98,6 +100,16 @@ Deno.serve(async (req: Request) => {
                 ${quote.bin_count > 0 ? `
                 <div class="detail-row">
                   <span class="detail-label">Number of Bins:</span> ${quote.bin_count}
+                </div>
+                ` : ""}
+                ${quote.bin_collection_frequency ? `
+                <div class="detail-row">
+                  <span class="detail-label">Bin Collection Frequency:</span> ${quote.bin_collection_frequency}
+                </div>
+                ` : ""}
+                ${quote.needs_bin_rental !== undefined ? `
+                <div class="detail-row">
+                  <span class="detail-label">Needs Bin Rental:</span> ${quote.needs_bin_rental ? "Yes" : "No"}
                 </div>
                 ` : ""}
                 ${quote.additional_services.length > 0 ? `

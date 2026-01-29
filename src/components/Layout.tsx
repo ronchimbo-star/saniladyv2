@@ -79,20 +79,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
-                  >
-                    Get Started
-                  </Link>
-                </>
+                <Link
+                  to="/signup"
+                  className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
+                >
+                  Get Started
+                </Link>
               )}
             </div>
           </div>

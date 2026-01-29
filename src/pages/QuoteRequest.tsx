@@ -13,6 +13,8 @@ export default function QuoteRequest() {
   const [cleaningFrequency, setCleaningFrequency] = useState('');
   const [employeeCount, setEmployeeCount] = useState(0);
   const [binCount, setBinCount] = useState(0);
+  const [binCollectionFrequency, setBinCollectionFrequency] = useState('monthly');
+  const [needsBinRental, setNeedsBinRental] = useState(false);
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
   const [specialRequirements, setSpecialRequirements] = useState('');
   const [estimatedCost, setEstimatedCost] = useState(0);
@@ -95,6 +97,9 @@ export default function QuoteRequest() {
           cleaning_frequency: cleaningFrequency || 'monthly',
           bedrooms: employeeCount,
           bathrooms: binCount,
+          number_of_bins: binCount,
+          bin_collection_frequency: binCollectionFrequency,
+          needs_bin_rental: needsBinRental,
           additional_services: additionalServices,
           special_requirements: specialRequirements,
           estimated_cost: estimatedCost,
@@ -126,6 +131,8 @@ export default function QuoteRequest() {
               property_size: propertySize || 'N/A',
               employee_count: employeeCount,
               bin_count: binCount,
+              bin_collection_frequency: binCollectionFrequency,
+              needs_bin_rental: needsBinRental,
               estimated_cost: estimatedCost,
               special_requirements: specialRequirements,
               additional_services: additionalServices,
@@ -148,6 +155,8 @@ export default function QuoteRequest() {
       setCleaningFrequency('');
       setEmployeeCount(0);
       setBinCount(0);
+      setBinCollectionFrequency('monthly');
+      setNeedsBinRental(false);
       setAdditionalServices([]);
       setSpecialRequirements('');
     } catch (err) {
@@ -294,17 +303,34 @@ export default function QuoteRequest() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Collection Frequency
+                    Bin Collection Frequency
                   </label>
                   <select
-                    value={cleaningFrequency}
-                    onChange={(e) => setCleaningFrequency(e.target.value)}
+                    value={binCollectionFrequency}
+                    onChange={(e) => setBinCollectionFrequency(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   >
                     <option value="weekly">Weekly</option>
-                    <option value="bi-weekly">Bi-Weekly</option>
+                    <option value="fortnightly">Fortnightly</option>
                     <option value="monthly">Monthly</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={needsBinRental}
+                      onChange={(e) => setNeedsBinRental(e.target.checked)}
+                      className="w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      I need to rent/hire feminine hygiene bins
+                    </span>
+                  </label>
+                  <p className="text-sm text-gray-500 mt-2 ml-8">
+                    Check this if you don't already have bins installed and need us to provide them
+                  </p>
                 </div>
               </>
             )}
