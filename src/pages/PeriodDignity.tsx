@@ -64,6 +64,43 @@ export default function PeriodDignity() {
           </p>
         </div>
 
+        <div className="bg-gradient-to-br from-green-50 to-teal-50 border-2 border-green-200 rounded-2xl p-8 mb-12">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Tax Benefits for Employers</h2>
+          <p className="text-lg text-gray-700 leading-relaxed mb-4">
+            The Period Dignity at Work Programme is structured to provide maximum tax efficiency for your business:
+          </p>
+          <div className="space-y-4">
+            <div className="bg-white rounded-lg p-4">
+              <h3 className="font-bold text-gray-800 mb-2">Tax-Deductible Business Expense</h3>
+              <p className="text-gray-700">
+                Providing free period products in washrooms is recognized as a staff welfare expense by HMRC,
+                similar to providing soap or toilet paper. This makes it a legitimate, tax-deductible business expense
+                that reduces your corporation tax liability.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-4">
+              <h3 className="font-bold text-gray-800 mb-2">Trivial Benefits Exemption</h3>
+              <p className="text-gray-700">
+                When products are provided directly to employees (rather than freely available in bathrooms),
+                they qualify under HMRC's £50 trivial benefits rule. To remain tax-exempt, the benefit must:
+              </p>
+              <ul className="mt-2 ml-6 space-y-1 text-gray-700">
+                <li>• Cost less than £50 per employee</li>
+                <li>• Not be cash or a cash voucher</li>
+                <li>• Not be part of a salary sacrifice scheme</li>
+                <li>• Not be provided in recognition of particular services by the employee</li>
+              </ul>
+            </div>
+            <div className="bg-white rounded-lg p-4">
+              <h3 className="font-bold text-gray-800 mb-2">No Additional Tax for Employees</h3>
+              <p className="text-gray-700">
+                Because our programme is priced below the £50 trivial benefits threshold and meets all HMRC criteria,
+                participating employees face no additional tax or National Insurance contributions on this benefit.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">How It Works</h2>
           <div className="space-y-6">
@@ -188,11 +225,15 @@ export default function PeriodDignity() {
         </div>
 
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Pricing Tiers</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Tax-Compliant Pricing Tiers</h2>
+          <p className="text-gray-600 mb-8 text-center max-w-3xl mx-auto">
+            All tiers are priced below £50 per employee to qualify for HMRC's trivial benefits exemption,
+            ensuring no tax or National Insurance implications for you or your employees.
+          </p>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-pink-500 transition-colors">
               <h3 className="text-xl font-bold text-gray-800 mb-2">Essential</h3>
-              <div className="text-3xl font-bold text-pink-600 mb-4">£35/month</div>
+              <div className="text-3xl font-bold text-pink-600 mb-4">£30/month</div>
               <p className="text-gray-600 mb-4">Perfect for basic needs</p>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start">
@@ -207,6 +248,10 @@ export default function PeriodDignity() {
                   <span className="text-pink-600 mr-2">✓</span>
                   <span>Basic customization</span>
                 </li>
+                <li className="flex items-start">
+                  <span className="text-pink-600 mr-2">✓</span>
+                  <span>Tax-free benefit</span>
+                </li>
               </ul>
             </div>
 
@@ -215,7 +260,7 @@ export default function PeriodDignity() {
                 Most Popular
               </div>
               <h3 className="text-xl font-bold mb-2">Premium</h3>
-              <div className="text-3xl font-bold mb-4">£55/month</div>
+              <div className="text-3xl font-bold mb-4">£40/month</div>
               <p className="mb-4 opacity-90">Comprehensive coverage</p>
               <ul className="space-y-2">
                 <li className="flex items-start">
@@ -234,12 +279,19 @@ export default function PeriodDignity() {
                   <span className="mr-2">✓</span>
                   <span>Priority support</span>
                 </li>
+                <li className="flex items-start">
+                  <span className="mr-2">✓</span>
+                  <span>Tax-free benefit</span>
+                </li>
               </ul>
             </div>
 
-            <div className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-pink-500 transition-colors">
+            <div className="bg-white border-2 border-green-300 rounded-xl p-6 hover:border-green-500 transition-colors">
+              <div className="bg-green-100 text-green-800 inline-block px-3 py-1 rounded-full text-sm font-bold mb-2">
+                Maximum Tax Benefit
+              </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Deluxe</h3>
-              <div className="text-3xl font-bold text-pink-600 mb-4">£85/month</div>
+              <div className="text-3xl font-bold text-pink-600 mb-4">£50/month</div>
               <p className="text-gray-600 mb-4">Ultimate care package</p>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start">
@@ -257,6 +309,10 @@ export default function PeriodDignity() {
                 <li className="flex items-start">
                   <span className="text-pink-600 mr-2">✓</span>
                   <span>Dedicated support</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-pink-600 mr-2">✓</span>
+                  <span>Tax-free at maximum £50</span>
                 </li>
               </ul>
             </div>

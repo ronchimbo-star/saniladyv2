@@ -65,27 +65,47 @@ export default function Contact() {
     let base = 0;
 
     if (serviceType === 'period-dignity') {
-      base = employeeCount * 60;
+      base = employeeCount * 35;
     } else if (serviceType === 'waste-management') {
-      if (propertySize === 'small') base = 50;
-      else if (propertySize === 'medium') base = 75;
-      else if (propertySize === 'large') base = 120;
-      else if (propertySize === 'extra-large') base = 180;
+      if (propertySize === 'small') base = 45;
+      else if (propertySize === 'medium') base = 65;
+      else if (propertySize === 'large') base = 95;
+      else if (propertySize === 'extra-large') base = 140;
 
-      base += binCount * 15;
+      if (binCollectionFrequency === 'weekly') {
+        base += binCount * 10;
+      } else if (binCollectionFrequency === 'fortnightly') {
+        base += binCount * 7;
+      } else {
+        base += binCount * 5;
+      }
+
+      if (needsBinRental) {
+        base += binCount * 3;
+      }
     } else if (serviceType === 'both') {
-      base = employeeCount * 55;
-      if (propertySize === 'small') base += 40;
-      else if (propertySize === 'medium') base += 60;
-      else if (propertySize === 'large') base += 100;
-      else if (propertySize === 'extra-large') base += 150;
+      base = employeeCount * 30;
+      if (propertySize === 'small') base += 35;
+      else if (propertySize === 'medium') base += 50;
+      else if (propertySize === 'large') base += 75;
+      else if (propertySize === 'extra-large') base += 110;
 
-      base += binCount * 12;
+      if (binCollectionFrequency === 'weekly') {
+        base += binCount * 8;
+      } else if (binCollectionFrequency === 'fortnightly') {
+        base += binCount * 6;
+      } else {
+        base += binCount * 4;
+      }
+
+      if (needsBinRental) {
+        base += binCount * 2.5;
+      }
     }
 
-    base += additionalServices.length * 25;
+    base += additionalServices.length * 15;
 
-    setEstimatedCost(base);
+    setEstimatedCost(Math.round(base));
   };
 
   const toggleService = (service: string) => {
@@ -154,34 +174,36 @@ export default function Contact() {
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        try {
-          await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${supabaseAnonKey}`,
-            },
-            body: JSON.stringify({
-              quote: {
-                id: quoteData.id,
-                customer_name: name,
-                customer_email: email,
-                customer_phone: phone,
-                company_name: company,
-                service_type: serviceType,
-                property_size: propertySize || 'N/A',
-                employee_count: employeeCount,
-                bin_count: binCount,
-                bin_collection_frequency: binCollectionFrequency,
-                needs_bin_rental: needsBinRental,
-                estimated_cost: estimatedCost,
-                special_requirements: specialRequirements || message,
-                additional_services: additionalServices,
-              }
-            }),
-          });
-        } catch (emailError) {
-          console.error('Email notification failed:', emailError);
+        if (supabaseUrl && supabaseAnonKey) {
+          try {
+            await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${supabaseAnonKey}`,
+              },
+              body: JSON.stringify({
+                quote: {
+                  id: quoteData.id,
+                  customer_name: name,
+                  customer_email: email,
+                  customer_phone: phone,
+                  company_name: company,
+                  service_type: serviceType,
+                  property_size: propertySize || 'N/A',
+                  employee_count: employeeCount,
+                  bin_count: binCount,
+                  bin_collection_frequency: binCollectionFrequency,
+                  needs_bin_rental: needsBinRental,
+                  estimated_cost: estimatedCost,
+                  special_requirements: specialRequirements || message,
+                  additional_services: additionalServices || [],
+                }
+              }),
+            });
+          } catch (emailError) {
+            console.error('Email notification failed:', emailError);
+          }
         }
       } else {
         const { data: contactData, error: contactError } = await supabase
@@ -205,29 +227,31 @@ export default function Contact() {
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        try {
-          await fetch(`${supabaseUrl}/functions/v1/send-contact-notification`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${supabaseAnonKey}`,
-            },
-            body: JSON.stringify({
-              contact: {
-                id: contactData.id,
-                type: formType,
-                name,
-                email,
-                phone,
-                company,
-                subject,
-                message,
-                service_type: '',
-              }
-            }),
-          });
-        } catch (emailError) {
-          console.error('Email notification failed:', emailError);
+        if (supabaseUrl && supabaseAnonKey) {
+          try {
+            await fetch(`${supabaseUrl}/functions/v1/send-contact-notification`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${supabaseAnonKey}`,
+              },
+              body: JSON.stringify({
+                contact: {
+                  id: contactData.id,
+                  type: formType,
+                  name,
+                  email,
+                  phone,
+                  company,
+                  subject,
+                  message,
+                  service_type: '',
+                }
+              }),
+            });
+          } catch (emailError) {
+            console.error('Email notification failed:', emailError);
+          }
         }
       }
 

@@ -29,18 +29,23 @@ export default function FAQ() {
     },
     {
       category: 'period-dignity',
-      question: 'Is the Period Dignity programme really tax-free?',
-      answer: 'Yes, it\'s 100% HMRC-compliant as a tax-free employee benefit. There are no additional tax implications for your organization or participating employees.',
+      question: 'Is the Period Dignity programme tax-deductible for employers?',
+      answer: 'Yes! For employers, providing period products qualifies as a tax-deductible business expense under staff welfare, similar to providing soap or toilet paper. Additionally, when products are provided directly to employees (not freely in bathrooms), they may qualify under HMRC\'s £50 trivial benefits exemption. To be exempt from tax, the benefit must not be cash, not part of a salary sacrifice scheme, and cost less than £50 per employee.',
+    },
+    {
+      category: 'period-dignity',
+      question: 'Is the Period Dignity programme really tax-free for employees?',
+      answer: 'Yes, it\'s 100% HMRC-compliant as a tax-free employee benefit when structured correctly. Our programme is designed to meet the trivial benefits criteria, ensuring no additional tax implications for your organization or participating employees. The benefit must cost less than £50 per employee to remain tax-free.',
     },
     {
       category: 'period-dignity',
       question: 'What products are available in the programme?',
-      answer: 'We offer a wide range including tampons, pads, menstrual cups, period underwear, and eco-friendly options. Employees can fully customize their monthly selection.',
+      answer: 'We offer a wide range including tampons, pads, menstrual cups, period underwear, and eco-friendly options. Employees can fully customize their monthly selection based on their personal preferences and cycle needs.',
     },
     {
       category: 'period-dignity',
       question: 'How much does the Period Dignity programme cost?',
-      answer: 'Our programme has three tiers: Essential (£35/month per employee), Premium (£55/month), and Deluxe (£85/month). The cost depends on the level of products and customization chosen.',
+      answer: 'Our programme is priced at £35 per employee per month, making it an affordable and tax-efficient benefit. This pricing ensures compliance with HMRC\'s £50 trivial benefits exemption while providing comprehensive feminine hygiene support for your team.',
     },
     {
       category: 'waste',
