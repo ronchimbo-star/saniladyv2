@@ -125,7 +125,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   to="/signup"
                   className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
                 >
-                  Get Started
+                  Get a Quote
                 </Link>
               )}
             </div>
@@ -172,7 +172,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="hover:text-pink-400 transition-colors">
+                  <Link to="/signup" className="hover:text-pink-400 transition-colors">
                     Request a Quote
                   </Link>
                 </li>

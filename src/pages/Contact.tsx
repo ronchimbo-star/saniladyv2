@@ -1,5 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+
+interface SiteSettings {
+  contact_phone: string;
+  contact_email: string;
+  contact_address: string;
+}
 
 export default function Contact() {
   const [formType, setFormType] = useState<'general' | 'quote'>('general');
@@ -13,6 +19,30 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [settings, setSettings] = useState<SiteSettings>({
+    contact_phone: '0800 123 4567',
+    contact_email: 'info@sanilady.co.uk',
+    contact_address: 'Kent, London & Essex'
+  });
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('contact_phone, contact_email, contact_address')
+        .maybeSingle();
+
+      if (data) {
+        setSettings(data);
+      }
+    } catch (err) {
+      console.error('Error fetching site settings:', err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,19 +111,19 @@ export default function Contact() {
           <div className="bg-white rounded-xl shadow-lg p-6 text-center">
             <div className="text-4xl mb-4">📧</div>
             <h3 className="font-bold text-gray-800 mb-2">Email Us</h3>
-            <p className="text-gray-600">info@sanilady.co.uk</p>
+            <p className="text-gray-600">{settings.contact_email}</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6 text-center">
             <div className="text-4xl mb-4">📞</div>
             <h3 className="font-bold text-gray-800 mb-2">Call Us</h3>
-            <p className="text-gray-600">0800 XXX XXXX</p>
+            <p className="text-gray-600">{settings.contact_phone}</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6 text-center">
             <div className="text-4xl mb-4">📍</div>
             <h3 className="font-bold text-gray-800 mb-2">Service Area</h3>
-            <p className="text-gray-600">Kent, London & Essex</p>
+            <p className="text-gray-600">{settings.contact_address}</p>
           </div>
         </div>
 
@@ -281,7 +311,7 @@ export default function Contact() {
               <span className="text-pink-600 text-xl">✓</span>
               <div>
                 <h3 className="font-semibold text-gray-800">Local Coverage</h3>
-                <p className="text-gray-600 text-sm">Serving Kent, London, and Essex with dedication</p>
+                <p className="text-gray-600 text-sm">Serving {settings.contact_address} with dedication</p>
               </div>
             </div>
           </div>

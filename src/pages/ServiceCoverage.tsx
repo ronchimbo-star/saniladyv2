@@ -44,13 +44,25 @@ export default function ServiceCoverage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-16">
-          <div className="mb-16">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 border-4 border-pink-200">
-              <img
-                src="/service-map.png"
-                alt="SaniLady Service Coverage Map - Kent, London, Essex"
-                className="w-full h-auto rounded-lg"
-              />
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              Our Service Coverage Map
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+              SaniLady provides comprehensive feminine hygiene and sanitary waste management
+              services across three major regions in the South East of England.
+            </p>
+          </div>
+
+          <div className="mb-16 flex justify-center">
+            <div className="w-full md:w-3/4 lg:w-1/2">
+              <div className="bg-white rounded-2xl shadow-2xl p-6 border-4 border-pink-200">
+                <img
+                  src="/service-map.png"
+                  alt="SaniLady Service Coverage Map - Kent, London, Essex"
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
             </div>
           </div>
 
@@ -163,7 +175,7 @@ export default function ServiceCoverage() {
                 to="/signup"
                 className="bg-white text-[#ec008c] border-2 border-[#ec008c] px-8 py-4 rounded-full font-bold text-lg hover:shadow-lg transform hover:scale-105 transition-all"
               >
-                Get Started
+                Get a Quote
               </Link>
             </div>
           </div>

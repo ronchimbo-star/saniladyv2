@@ -149,7 +149,7 @@ export default function ServiceAreaKent() {
 
         <div className="text-center bg-white rounded-2xl shadow-xl p-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            Get Started in Kent Today
+            Get a Quote for Kent Today
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
             Request a free quote or site assessment for your Kent business. We'll provide customized
