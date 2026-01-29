@@ -165,10 +165,10 @@ export default function AdminDashboard() {
               <span>🖼️</span>
               <span>Media Library</span>
             </a>
-            <a href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+            <Link to="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>⚙️</span>
               <span>Site Settings</span>
-            </a>
+            </Link>
           </nav>
         </div>
       </aside>

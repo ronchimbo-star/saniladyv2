@@ -1,10 +1,46 @@
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import CookieConsent from './CookieConsent';
+
+interface SiteSettings {
+  header_logo_url: string;
+  footer_logo_url: string;
+  contact_phone: string;
+  contact_email: string;
+  contact_address: string;
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const [settings, setSettings] = useState<SiteSettings>({
+    header_logo_url: '/sanilady-logo-header.png',
+    footer_logo_url: '/sanilady-logo-footer.png',
+    contact_phone: '0800 123 4567',
+    contact_email: 'info@sanilady.co.uk',
+    contact_address: 'Serving Kent, London & Essex'
+  });
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('header_logo_url, footer_logo_url, contact_phone, contact_email, contact_address')
+        .maybeSingle();
+
+      if (data) {
+        setSettings(data);
+      }
+    } catch (err) {
+      console.error('Error fetching site settings:', err);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -18,13 +54,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex justify-between items-center h-24">
             <Link to={user ? '/dashboard' : '/'}>
               <img
-                src="/sanilady-logo-header.png"
+                src={settings.header_logo_url}
                 alt="SaniLady"
                 className="h-20"
               />
             </Link>
 
             <div className="hidden lg:flex items-center space-x-6">
+              <Link
+                to="/"
+                className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
+              >
+                Home
+              </Link>
               <Link
                 to="/period-dignity"
                 className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
@@ -98,13 +140,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <img
-                src="/sanilady-logo-footer.png"
+                src={settings.footer_logo_url}
                 alt="SaniLady"
                 className="h-10 mb-4"
               />
               <p className="text-sm opacity-90">
                 Comprehensive feminine hygiene solutions for UK businesses and individuals.
               </p>
+              {settings.contact_phone && (
+                <p className="text-sm mt-3">
+                  <strong>Phone:</strong> {settings.contact_phone}
+                </p>
+              )}
+              {settings.contact_email && (
+                <p className="text-sm mt-1">
+                  <strong>Email:</strong> {settings.contact_email}
+                </p>
+              )}
             </div>
             <div>
               <h3 className="font-bold mb-3">Services</h3>
@@ -132,6 +184,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <li>
                   <Link to="/about" className="hover:text-pink-400 transition-colors">
                     About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/service-coverage" className="hover:text-pink-400 transition-colors">
+                    Service Coverage
                   </Link>
                 </li>
                 <li>
@@ -169,7 +226,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="border-t border-white/20 pt-6 text-center">
             <p className="text-sm opacity-90">
-              &copy; {new Date().getFullYear()} SaniLady. All rights reserved. | Serving Kent, London & Essex
+              &copy; {new Date().getFullYear()} SaniLady. All rights reserved. | {settings.contact_address}
             </p>
           </div>
         </div>
