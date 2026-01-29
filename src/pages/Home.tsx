@@ -298,7 +298,7 @@ export default function Home() {
             Get your personalized quote for our Dignity at Work programme or waste management services
           </p>
           <Link
-            to="/signup"
+            to="/contact#quote"
             className="inline-block bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-12 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all"
           >
             Get a Quote

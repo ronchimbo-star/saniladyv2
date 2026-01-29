@@ -123,7 +123,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </>
               ) : (
                 <Link
-                  to="/signup"
+                  to="/contact#quote"
                   className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
                 >
                   Get a Quote
@@ -229,7 +229,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </>
                 ) : (
                   <Link
-                    to="/signup"
+                    to="/contact#quote"
                     className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition-all text-center"
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -281,7 +281,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/signup" className="hover:text-pink-400 transition-colors">
+                  <Link to="/contact#quote" className="hover:text-pink-400 transition-colors">
                     Request a Quote
                   </Link>
                 </li>

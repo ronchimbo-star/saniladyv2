@@ -35,6 +35,9 @@ export default function Contact() {
 
   useEffect(() => {
     fetchSettings();
+    if (window.location.hash === '#quote') {
+      setFormType('quote');
+    }
   }, []);
 
   useEffect(() => {
