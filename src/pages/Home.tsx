@@ -6,51 +6,64 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <div className="relative bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white">
-        <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-          <img
-            src="/sanilady-logo-header.png"
-            alt="SaniLady"
-            className="h-20 mx-auto mb-8 filter brightness-0 invert"
-          />
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Comprehensive Feminine Hygiene Solutions
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
-            Supporting UK businesses and individuals with professional sanitary waste management and the innovative Dignity at Work programme
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {user ? (
-              <>
-                <Link
-                  to="/dashboard"
-                  className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all"
-                >
-                  Go to Dashboard
-                </Link>
-                <Link
-                  to="/quote-request"
-                  className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all"
-                >
-                  Request a Quote
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/signup"
-                  className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all"
-                >
-                  Get Started
-                </Link>
-                <Link
-                  to="/login"
-                  className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all"
-                >
-                  Sign In
-                </Link>
-              </>
-            )}
+      <div className="relative bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="text-left space-y-6">
+              <img
+                src="/sanilady-logo-header.png"
+                alt="SaniLady"
+                className="h-16 md:h-20 filter brightness-0 invert mb-8"
+              />
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                Comprehensive Feminine Hygiene Solutions
+              </h1>
+              <p className="text-lg md:text-xl opacity-90">
+                Supporting UK businesses and individuals with professional sanitary waste management and the innovative Dignity at Work programme
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                {user ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                    >
+                      Go to Dashboard
+                    </Link>
+                    <Link
+                      to="/quote-request"
+                      className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                    >
+                      Request a Quote
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/signup"
+                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                    >
+                      Get Started
+                    </Link>
+                    <Link
+                      to="/login"
+                      className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                    >
+                      Sign In
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="relative flex justify-center items-center">
+              <div className="absolute inset-0 bg-white opacity-10 rounded-full blur-3xl transform scale-75"></div>
+              <img
+                src="/sanilady-hero.png"
+                alt="SaniLady Period Dignity"
+                className="relative w-full max-w-lg drop-shadow-2xl transform hover:scale-105 transition-transform duration-500 animate-float"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -64,15 +77,15 @@ export default function Home() {
         </p>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border border-pink-100">
+          <Link to="/period-dignity" className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all border border-pink-100 transform hover:scale-[1.02] group">
             <div className="text-5xl mb-4">💼</div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+            <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-pink-600 transition-colors">
               Dignity at Work Programme
             </h3>
             <p className="text-gray-600 mb-4">
               Tax-free employee benefit providing personalised feminine hygiene products. Support workplace wellbeing, enhance DEI initiatives, and reduce turnover.
             </p>
-            <ul className="space-y-2 text-gray-700">
+            <ul className="space-y-2 text-gray-700 mb-4">
               <li className="flex items-start">
                 <span className="text-pink-600 mr-2">✓</span>
                 <span>HMRC-compliant tax-free benefit</span>
@@ -86,17 +99,20 @@ export default function Home() {
                 <span>Monthly subscriptions £35-£85 per employee</span>
               </li>
             </ul>
-          </div>
+            <div className="text-pink-600 font-semibold group-hover:underline">
+              Learn More →
+            </div>
+          </Link>
 
-          <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border border-blue-100">
+          <Link to="/waste-services" className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all border border-blue-100 transform hover:scale-[1.02] group">
             <div className="text-5xl mb-4">♻️</div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+            <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
               Sanitary Waste Management
             </h3>
             <p className="text-gray-600 mb-4">
               Professional sanitary bin collection and disposal services ensuring compliance and workplace hygiene standards.
             </p>
-            <ul className="space-y-2 text-gray-700">
+            <ul className="space-y-2 text-gray-700 mb-4">
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
                 <span>Licensed waste disposal facilities</span>
@@ -110,7 +126,10 @@ export default function Home() {
                 <span>Full regulatory compliance</span>
               </li>
             </ul>
-          </div>
+            <div className="text-blue-600 font-semibold group-hover:underline">
+              Learn More →
+            </div>
+          </Link>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
@@ -124,41 +143,41 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-gray-800 text-white py-20">
+      <div className="bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#d81b8b] text-white py-20">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12">
             Why Choose SaniLady?
           </h2>
 
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center">
+            <div className="text-center bg-white bg-opacity-10 backdrop-blur-sm p-6 rounded-xl hover:bg-opacity-20 transition-all">
               <div className="text-4xl mb-3">🎯</div>
               <h3 className="text-lg font-bold mb-2">DEI Enhancement</h3>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm opacity-90">
                 Tangible gender inclusion strategy implementation
               </p>
             </div>
 
-            <div className="text-center">
+            <div className="text-center bg-white bg-opacity-10 backdrop-blur-sm p-6 rounded-xl hover:bg-opacity-20 transition-all">
               <div className="text-4xl mb-3">💷</div>
               <h3 className="text-lg font-bold mb-2">Cost Savings</h3>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm opacity-90">
                 Reduced turnover, absenteeism, and recruitment costs
               </p>
             </div>
 
-            <div className="text-center">
+            <div className="text-center bg-white bg-opacity-10 backdrop-blur-sm p-6 rounded-xl hover:bg-opacity-20 transition-all">
               <div className="text-4xl mb-3">📋</div>
               <h3 className="text-lg font-bold mb-2">Fully Managed</h3>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm opacity-90">
                 Simplified administration with single invoicing
               </p>
             </div>
 
-            <div className="text-center">
+            <div className="text-center bg-white bg-opacity-10 backdrop-blur-sm p-6 rounded-xl hover:bg-opacity-20 transition-all">
               <div className="text-4xl mb-3">🌱</div>
               <h3 className="text-lg font-bold mb-2">Sustainable</h3>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm opacity-90">
                 Eco-friendly product options and responsible waste disposal
               </p>
             </div>
