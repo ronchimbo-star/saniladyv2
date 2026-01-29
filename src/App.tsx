@@ -16,6 +16,10 @@ import WasteServices from './pages/WasteServices';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import CookiePolicy from './pages/CookiePolicy';
+import News from './pages/News';
+import NewsArticle from './pages/NewsArticle';
+import AdminNews from './pages/AdminNews';
+import AdminNewsEdit from './pages/AdminNewsEdit';
 
 function App() {
   return (
@@ -50,11 +54,29 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin/news"
+              element={
+                <ProtectedRoute>
+                  <AdminNews />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/news/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminNewsEdit />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/period-dignity" element={<PeriodDignity />} />
             <Route path="/waste-services" element={<WasteServices />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:slug" element={<NewsArticle />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />

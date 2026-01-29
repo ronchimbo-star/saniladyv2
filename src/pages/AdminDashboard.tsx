@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface Quote {
   id: string;
@@ -153,10 +153,10 @@ export default function AdminDashboard() {
               <span>📋</span>
               <span>Quote Requests</span>
             </a>
-            <a href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+            <Link to="/admin/news" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>📰</span>
               <span>News Articles</span>
-            </a>
+            </Link>
             <a href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>📄</span>
               <span>Static Pages</span>
