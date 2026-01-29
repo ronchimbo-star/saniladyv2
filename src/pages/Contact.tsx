@@ -145,7 +145,7 @@ export default function Contact() {
 
     try {
       if (formType === 'quote') {
-        const { data: quoteData, error: quoteError } = await supabase
+        const { error: quoteError } = await supabase
           .from('quotes')
           .insert({
             user_id: null,
@@ -165,9 +165,7 @@ export default function Contact() {
             special_requirements: specialRequirements || message,
             estimated_cost: estimatedCost,
             status: 'pending',
-          })
-          .select()
-          .single();
+          });
 
         if (quoteError) throw quoteError;
 
@@ -184,7 +182,6 @@ export default function Contact() {
               },
               body: JSON.stringify({
                 quote: {
-                  id: quoteData.id,
                   customer_name: name,
                   customer_email: email,
                   customer_phone: phone,
@@ -206,7 +203,7 @@ export default function Contact() {
           }
         }
       } else {
-        const { data: contactData, error: contactError } = await supabase
+        const { error: contactError } = await supabase
           .from('contact_submissions')
           .insert({
             type: formType,
@@ -218,9 +215,7 @@ export default function Contact() {
             message,
             service_type: '',
             status: 'pending',
-          })
-          .select()
-          .single();
+          });
 
         if (contactError) throw contactError;
 
@@ -237,7 +232,6 @@ export default function Contact() {
               },
               body: JSON.stringify({
                 contact: {
-                  id: contactData.id,
                   type: formType,
                   name,
                   email,

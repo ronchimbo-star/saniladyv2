@@ -84,7 +84,7 @@ export default function QuoteRequest() {
     setLoading(true);
 
     try {
-      const { data: quoteData, error: submitError } = await supabase
+      const { error: submitError } = await supabase
         .from('quotes')
         .insert({
           user_id: user!.id,
@@ -104,9 +104,7 @@ export default function QuoteRequest() {
           special_requirements: specialRequirements,
           estimated_cost: estimatedCost,
           status: 'pending',
-        })
-        .select()
-        .single();
+        });
 
       if (submitError) throw submitError;
 
@@ -122,7 +120,6 @@ export default function QuoteRequest() {
           },
           body: JSON.stringify({
             quote: {
-              id: quoteData.id,
               customer_name: customerName,
               customer_email: customerEmail,
               customer_phone: customerPhone,
