@@ -1,6 +1,41 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+
+interface Testimonial {
+  id: string;
+  company_name: string;
+  contact_name: string;
+  contact_role: string;
+  testimonial_text: string;
+  rating: number;
+  image_url: string;
+}
 
 export default function PeriodDignity() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const fetchTestimonials = async () => {
+    try {
+      const { data } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('service_type', 'period-dignity')
+        .eq('is_published', true)
+        .order('display_order');
+
+      if (data) {
+        setTestimonials(data);
+      }
+    } catch (err) {
+      console.error('Error fetching testimonials:', err);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <div className="bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white py-20">
@@ -252,6 +287,48 @@ export default function PeriodDignity() {
             </p>
           </div>
         </div>
+
+        {testimonials.length > 0 && (
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Success Stories</h2>
+            <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+              See how organizations are transforming workplace culture with Period Dignity
+            </p>
+            <div className="grid md:grid-cols-2 gap-8">
+              {testimonials.map((testimonial) => (
+                <div
+                  key={testimonial.id}
+                  className="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-pink-500 hover:shadow-xl transition-all"
+                >
+                  <div className="h-64 overflow-hidden">
+                    <img
+                      src={testimonial.image_url}
+                      alt={testimonial.company_name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <span key={i} className="text-yellow-400 text-2xl">★</span>
+                      ))}
+                    </div>
+                    <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                      "{testimonial.testimonial_text}"
+                    </p>
+                    <div className="border-t border-gray-200 pt-4">
+                      <p className="font-bold text-gray-800 text-lg">{testimonial.contact_name}</p>
+                      {testimonial.contact_role && (
+                        <p className="text-gray-600">{testimonial.contact_role}</p>
+                      )}
+                      <p className="text-[#ec008c] font-semibold mt-1">{testimonial.company_name}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="text-center bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">

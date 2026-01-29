@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import QuoteRequest from './pages/QuoteRequest';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSettings from './pages/AdminSettings';
+import AdminTestimonials from './pages/AdminTestimonials';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
@@ -82,6 +83,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminSettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/testimonials"
+              element={
+                <ProtectedRoute>
+                  <AdminTestimonials />
                 </ProtectedRoute>
               }
             />
