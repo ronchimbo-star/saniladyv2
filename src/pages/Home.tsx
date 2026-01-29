@@ -54,16 +54,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-left space-y-6">
-              <img
-                src="/sanilady-logo-header.png"
-                alt="SaniLady"
-                className="h-16 md:h-20 filter brightness-0 invert mb-8"
-              />
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                Comprehensive Feminine Hygiene Solutions
+                Your Partner in Feminine Hygiene & Period Dignity
               </h1>
               <p className="text-lg md:text-xl opacity-90">
-                Supporting UK businesses and individuals with professional sanitary waste management and the innovative Dignity at Work programme
+                From reliable sanitary waste disposal to our innovative Dignity at Work programme, we provide comprehensive solutions that support employee wellbeing and simplify facility management for UK organisations.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 {user ? (
