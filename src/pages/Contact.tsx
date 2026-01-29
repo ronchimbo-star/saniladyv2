@@ -128,6 +128,7 @@ export default function Contact() {
         const { data: quoteData, error: quoteError } = await supabase
           .from('quotes')
           .insert({
+            user_id: null,
             customer_name: name,
             customer_email: email,
             customer_phone: phone,
