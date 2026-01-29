@@ -98,7 +98,7 @@ Deno.serve(async (req: Request) => {
               </div>
 
               <div class="footer">
-                <p>Submission ID: ${contact.id}</p>
+                ${contact.id ? `<p>Submission ID: ${contact.id}</p>` : ''}
                 <p>Type: ${contact.type === 'quote' ? 'Quote Request' : 'General Enquiry'}</p>
                 <p>This is an automated notification from SaniLady</p>
               </div>
