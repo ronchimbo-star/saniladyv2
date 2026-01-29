@@ -4,11 +4,11 @@ import { supabase } from '../lib/supabase';
 
 export default function QuoteRequest() {
   const { user } = useAuth();
-  const [propertyType, setPropertyType] = useState('');
+  const [serviceType, setServiceType] = useState('');
   const [propertySize, setPropertySize] = useState('');
   const [cleaningFrequency, setCleaningFrequency] = useState('');
-  const [bedrooms, setBedrooms] = useState(0);
-  const [bathrooms, setBathrooms] = useState(0);
+  const [employeeCount, setEmployeeCount] = useState(0);
+  const [binCount, setBinCount] = useState(0);
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
   const [specialRequirements, setSpecialRequirements] = useState('');
   const [estimatedCost, setEstimatedCost] = useState(0);
@@ -18,22 +18,31 @@ export default function QuoteRequest() {
 
   useEffect(() => {
     calculateEstimate();
-  }, [propertyType, propertySize, cleaningFrequency, bedrooms, bathrooms, additionalServices]);
+  }, [serviceType, propertySize, cleaningFrequency, employeeCount, binCount, additionalServices]);
 
   const calculateEstimate = () => {
     let base = 0;
 
-    if (propertySize === 'small') base = 40;
-    else if (propertySize === 'medium') base = 60;
-    else if (propertySize === 'large') base = 90;
-    else if (propertySize === 'extra-large') base = 120;
+    if (serviceType === 'dignity-at-work') {
+      base = employeeCount * 60;
+    } else if (serviceType === 'waste-management') {
+      if (propertySize === 'small') base = 50;
+      else if (propertySize === 'medium') base = 75;
+      else if (propertySize === 'large') base = 120;
+      else if (propertySize === 'extra-large') base = 180;
 
-    if (cleaningFrequency === 'weekly') base *= 4;
-    else if (cleaningFrequency === 'bi-weekly') base *= 2;
-    else if (cleaningFrequency === 'monthly') base *= 1;
+      base += binCount * 15;
+    } else if (serviceType === 'both') {
+      base = employeeCount * 55;
+      if (propertySize === 'small') base += 40;
+      else if (propertySize === 'medium') base += 60;
+      else if (propertySize === 'large') base += 100;
+      else if (propertySize === 'extra-large') base += 150;
 
-    base += bedrooms * 10 + bathrooms * 15;
-    base += additionalServices.length * 20;
+      base += binCount * 12;
+    }
+
+    base += additionalServices.length * 25;
 
     setEstimatedCost(base);
   };
@@ -51,8 +60,13 @@ export default function QuoteRequest() {
     setError('');
     setSuccess(false);
 
-    if (!propertyType || !propertySize || !cleaningFrequency) {
-      setError('Please fill in all required fields');
+    if (!serviceType) {
+      setError('Please select a service type');
+      return;
+    }
+
+    if ((serviceType === 'waste-management' || serviceType === 'both') && !propertySize) {
+      setError('Please select facility size for waste management services');
       return;
     }
 
@@ -63,11 +77,11 @@ export default function QuoteRequest() {
         .from('quotes')
         .insert({
           user_id: user!.id,
-          property_type: propertyType,
-          property_size: propertySize,
-          cleaning_frequency: cleaningFrequency,
-          bedrooms,
-          bathrooms,
+          property_type: serviceType,
+          property_size: propertySize || 'N/A',
+          cleaning_frequency: cleaningFrequency || 'monthly',
+          bedrooms: employeeCount,
+          bathrooms: binCount,
           additional_services: additionalServices,
           special_requirements: specialRequirements,
           estimated_cost: estimatedCost,
@@ -79,11 +93,11 @@ export default function QuoteRequest() {
       setSuccess(true);
       setError('');
 
-      setPropertyType('');
+      setServiceType('');
       setPropertySize('');
       setCleaningFrequency('');
-      setBedrooms(0);
-      setBathrooms(0);
+      setEmployeeCount(0);
+      setBinCount(0);
       setAdditionalServices([]);
       setSpecialRequirements('');
     } catch (err) {
@@ -98,97 +112,100 @@ export default function QuoteRequest() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Request a Quote</h1>
-          <p className="text-gray-600 mb-8">Get an instant estimate for your cleaning needs</p>
+          <p className="text-gray-600 mb-8">Get an instant estimate for your feminine hygiene solutions</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Property Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={propertyType}
-                  onChange={(e) => setPropertyType(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                >
-                  <option value="">Select property type</option>
-                  <option value="apartment">Apartment</option>
-                  <option value="house">House</option>
-                  <option value="office">Office</option>
-                  <option value="commercial">Commercial</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Property Size <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={propertySize}
-                  onChange={(e) => setPropertySize(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                >
-                  <option value="">Select size</option>
-                  <option value="small">Small (up to 1000 sq ft)</option>
-                  <option value="medium">Medium (1000-2000 sq ft)</option>
-                  <option value="large">Large (2000-3000 sq ft)</option>
-                  <option value="extra-large">Extra Large (3000+ sq ft)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cleaning Frequency <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={cleaningFrequency}
-                  onChange={(e) => setCleaningFrequency(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                >
-                  <option value="">Select frequency</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="bi-weekly">Bi-Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="one-time">One-Time</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Number of Bedrooms
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={bedrooms}
-                  onChange={(e) => setBedrooms(parseInt(e.target.value) || 0)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Number of Bathrooms
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={bathrooms}
-                  onChange={(e) => setBathrooms(parseInt(e.target.value) || 0)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Service Type <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={serviceType}
+                onChange={(e) => setServiceType(e.target.value)}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              >
+                <option value="">Select service type</option>
+                <option value="dignity-at-work">Dignity at Work Programme</option>
+                <option value="waste-management">Sanitary Waste Management</option>
+                <option value="both">Both Services (Combined)</option>
+                <option value="individual-subscription">Individual Subscription</option>
+              </select>
             </div>
+
+            {(serviceType === 'dignity-at-work' || serviceType === 'both') && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Number of Female Employees
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={employeeCount}
+                  onChange={(e) => setEmployeeCount(parseInt(e.target.value) || 0)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  placeholder="Approximate number"
+                />
+                <p className="text-sm text-gray-500 mt-1">For Dignity at Work programme pricing</p>
+              </div>
+            )}
+
+            {(serviceType === 'waste-management' || serviceType === 'both') && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Facility Size <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={propertySize}
+                    onChange={(e) => setPropertySize(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  >
+                    <option value="">Select facility size</option>
+                    <option value="small">Small (1-10 employees)</option>
+                    <option value="medium">Medium (11-50 employees)</option>
+                    <option value="large">Large (51-200 employees)</option>
+                    <option value="extra-large">Extra Large (200+ employees)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Number of Sanitary Bins Required
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={binCount}
+                    onChange={(e) => setBinCount(parseInt(e.target.value) || 0)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="Estimated number of bins"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Collection Frequency
+                  </label>
+                  <select
+                    value={cleaningFrequency}
+                    onChange={(e) => setCleaningFrequency(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  >
+                    <option value="weekly">Weekly</option>
+                    <option value="bi-weekly">Bi-Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
+              </>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Additional Services
               </label>
               <div className="grid md:grid-cols-2 gap-3">
-                {['Deep Cleaning', 'Carpet Cleaning', 'Window Cleaning', 'Laundry Service'].map((service) => (
+                {['Sustainable Products', 'Training & Education', 'Policy Development', 'Compliance Audit'].map((service) => (
                   <label key={service} className="flex items-center space-x-3 cursor-pointer">
                     <input
                       type="checkbox"
@@ -215,13 +232,20 @@ export default function QuoteRequest() {
               />
             </div>
 
-            <div className="bg-pink-50 border border-pink-200 rounded-lg p-6">
-              <p className="text-sm text-gray-600 mb-2">Estimated Monthly Cost</p>
-              <p className="text-4xl font-bold text-[#ec008c]">£{estimatedCost.toFixed(2)}</p>
-              <p className="text-sm text-purple-600 mt-2">
-                This is an estimate. Final pricing will be confirmed in your quote.
-              </p>
-            </div>
+            {serviceType && (
+              <div className="bg-pink-50 border border-pink-200 rounded-lg p-6">
+                <p className="text-sm text-gray-600 mb-2">Estimated Monthly Cost</p>
+                <p className="text-4xl font-bold text-[#ec008c]">£{estimatedCost.toFixed(2)}</p>
+                <p className="text-sm text-purple-600 mt-2">
+                  This is an estimate. Final pricing will be confirmed in your quote.
+                </p>
+                {serviceType === 'dignity-at-work' && employeeCount > 0 && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    Approximately £{(estimatedCost / employeeCount).toFixed(2)} per employee per month
+                  </p>
+                )}
+              </div>
+            )}
 
             {success && (
               <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">

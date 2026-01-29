@@ -45,7 +45,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Welcome back, {user?.email}
           </h1>
-          <p className="text-gray-600">Manage your cleaning service quotes</p>
+          <p className="text-gray-600">Manage your SaniLady service quotes</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
@@ -85,15 +85,18 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800 capitalize">
-                        {quote.property_type} - {quote.property_size}
+                        {quote.property_type.replace(/-/g, ' ')}
                       </h3>
                       <p className="text-sm text-gray-600 capitalize">
-                        {quote.cleaning_frequency} Cleaning
+                        {quote.property_size !== 'N/A' && `${quote.property_size} facility`}
+                        {quote.property_size !== 'N/A' && ' • '}
+                        {quote.cleaning_frequency} service
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-[#ec008c]">
                         £{Number(quote.estimated_cost).toFixed(2)}
+                        <span className="text-sm text-gray-600 font-normal">/month</span>
                       </p>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mt-2 ${
