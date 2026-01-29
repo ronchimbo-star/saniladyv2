@@ -16,6 +16,14 @@ export default function Contact() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [serviceType, setServiceType] = useState('');
+  const [propertySize, setPropertySize] = useState('');
+  const [employeeCount, setEmployeeCount] = useState(0);
+  const [binCount, setBinCount] = useState(0);
+  const [binCollectionFrequency, setBinCollectionFrequency] = useState('monthly');
+  const [needsBinRental, setNeedsBinRental] = useState(false);
+  const [additionalServices, setAdditionalServices] = useState<string[]>([]);
+  const [specialRequirements, setSpecialRequirements] = useState('');
+  const [estimatedCost, setEstimatedCost] = useState(0);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -28,6 +36,12 @@ export default function Contact() {
   useEffect(() => {
     fetchSettings();
   }, []);
+
+  useEffect(() => {
+    if (formType === 'quote') {
+      calculateEstimate();
+    }
+  }, [serviceType, propertySize, employeeCount, binCount, additionalServices, formType]);
 
   const fetchSettings = async () => {
     try {
@@ -44,13 +58,53 @@ export default function Contact() {
     }
   };
 
+  const calculateEstimate = () => {
+    let base = 0;
+
+    if (serviceType === 'period-dignity') {
+      base = employeeCount * 60;
+    } else if (serviceType === 'waste-management') {
+      if (propertySize === 'small') base = 50;
+      else if (propertySize === 'medium') base = 75;
+      else if (propertySize === 'large') base = 120;
+      else if (propertySize === 'extra-large') base = 180;
+
+      base += binCount * 15;
+    } else if (serviceType === 'both') {
+      base = employeeCount * 55;
+      if (propertySize === 'small') base += 40;
+      else if (propertySize === 'medium') base += 60;
+      else if (propertySize === 'large') base += 100;
+      else if (propertySize === 'extra-large') base += 150;
+
+      base += binCount * 12;
+    }
+
+    base += additionalServices.length * 25;
+
+    setEstimatedCost(base);
+  };
+
+  const toggleService = (service: string) => {
+    setAdditionalServices(prev =>
+      prev.includes(service)
+        ? prev.filter(s => s !== service)
+        : [...prev, service]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
 
-    if (!name || !email || !message) {
+    if (!name || !email) {
       setError('Please fill in all required fields');
+      return;
+    }
+
+    if (formType === 'general' && !message) {
+      setError('Please provide a message');
       return;
     }
 
@@ -59,24 +113,119 @@ export default function Contact() {
       return;
     }
 
+    if (formType === 'quote' && (serviceType === 'waste-management' || serviceType === 'both') && !propertySize) {
+      setError('Please select facility size for waste management services');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const { error: submitError } = await supabase
-        .from('contact_submissions')
-        .insert({
-          type: formType,
-          name,
-          email,
-          phone,
-          company,
-          subject: formType === 'general' ? subject : '',
-          message,
-          service_type: formType === 'quote' ? serviceType : '',
-          status: 'pending',
-        });
+      if (formType === 'quote') {
+        const { data: quoteData, error: quoteError } = await supabase
+          .from('quotes')
+          .insert({
+            customer_name: name,
+            customer_email: email,
+            customer_phone: phone,
+            company_name: company,
+            property_type: serviceType,
+            property_size: propertySize || 'N/A',
+            cleaning_frequency: 'monthly',
+            bedrooms: employeeCount,
+            bathrooms: binCount,
+            number_of_bins: binCount,
+            bin_collection_frequency: binCollectionFrequency,
+            needs_bin_rental: needsBinRental,
+            additional_services: additionalServices,
+            special_requirements: specialRequirements || message,
+            estimated_cost: estimatedCost,
+            status: 'pending',
+          })
+          .select()
+          .single();
 
-      if (submitError) throw submitError;
+        if (quoteError) throw quoteError;
+
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        try {
+          await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({
+              quote: {
+                id: quoteData.id,
+                customer_name: name,
+                customer_email: email,
+                customer_phone: phone,
+                company_name: company,
+                service_type: serviceType,
+                property_size: propertySize || 'N/A',
+                employee_count: employeeCount,
+                bin_count: binCount,
+                bin_collection_frequency: binCollectionFrequency,
+                needs_bin_rental: needsBinRental,
+                estimated_cost: estimatedCost,
+                special_requirements: specialRequirements || message,
+                additional_services: additionalServices,
+              }
+            }),
+          });
+        } catch (emailError) {
+          console.error('Email notification failed:', emailError);
+        }
+      } else {
+        const { data: contactData, error: contactError } = await supabase
+          .from('contact_submissions')
+          .insert({
+            type: formType,
+            name,
+            email,
+            phone,
+            company,
+            subject,
+            message,
+            service_type: '',
+            status: 'pending',
+          })
+          .select()
+          .single();
+
+        if (contactError) throw contactError;
+
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        try {
+          await fetch(`${supabaseUrl}/functions/v1/send-contact-notification`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({
+              contact: {
+                id: contactData.id,
+                type: formType,
+                name,
+                email,
+                phone,
+                company,
+                subject,
+                message,
+                service_type: '',
+              }
+            }),
+          });
+        } catch (emailError) {
+          console.error('Email notification failed:', emailError);
+        }
+      }
 
       setSuccess(true);
       setName('');
@@ -86,6 +235,13 @@ export default function Contact() {
       setSubject('');
       setMessage('');
       setServiceType('');
+      setPropertySize('');
+      setEmployeeCount(0);
+      setBinCount(0);
+      setBinCollectionFrequency('monthly');
+      setNeedsBinRental(false);
+      setAdditionalServices([]);
+      setSpecialRequirements('');
 
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
@@ -236,42 +392,173 @@ export default function Contact() {
             )}
 
             {formType === 'quote' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Service Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={serviceType}
-                  onChange={(e) => setServiceType(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                >
-                  <option value="">Select a service...</option>
-                  <option value="period-dignity">Period Dignity at Work Programme</option>
-                  <option value="waste-management">Sanitary Waste Management</option>
-                  <option value="both">Both Services</option>
-                  <option value="individual">Individual Subscription</option>
-                </select>
-              </div>
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Service Type <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={serviceType}
+                    onChange={(e) => setServiceType(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  >
+                    <option value="">Select a service...</option>
+                    <option value="period-dignity">Period Dignity at Work Programme</option>
+                    <option value="waste-management">Sanitary Waste Management</option>
+                    <option value="both">Both Services</option>
+                    <option value="individual">Individual Subscription</option>
+                  </select>
+                </div>
+
+                {(serviceType === 'period-dignity' || serviceType === 'both') && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Number of Female Employees
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={employeeCount}
+                      onChange={(e) => setEmployeeCount(parseInt(e.target.value) || 0)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                      placeholder="Approximate number"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">For Dignity at Work programme pricing</p>
+                  </div>
+                )}
+
+                {(serviceType === 'waste-management' || serviceType === 'both') && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Facility Size <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={propertySize}
+                        onChange={(e) => setPropertySize(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                      >
+                        <option value="">Select facility size</option>
+                        <option value="small">Small (1-10 employees)</option>
+                        <option value="medium">Medium (11-50 employees)</option>
+                        <option value="large">Large (51-200 employees)</option>
+                        <option value="extra-large">Extra Large (200+ employees)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Number of Sanitary Bins Required
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={binCount}
+                        onChange={(e) => setBinCount(parseInt(e.target.value) || 0)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                        placeholder="Estimated number of bins"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Bin Collection Frequency
+                      </label>
+                      <select
+                        value={binCollectionFrequency}
+                        onChange={(e) => setBinCollectionFrequency(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                      >
+                        <option value="weekly">Weekly</option>
+                        <option value="fortnightly">Fortnightly</option>
+                        <option value="monthly">Monthly</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={needsBinRental}
+                          onChange={(e) => setNeedsBinRental(e.target.checked)}
+                          className="w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          I need to rent/hire feminine hygiene bins
+                        </span>
+                      </label>
+                      <p className="text-sm text-gray-500 mt-2 ml-8">
+                        Check this if you don't already have bins installed and need us to provide them
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Additional Services
+                  </label>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {['Sustainable Products', 'Training & Education', 'Policy Development', 'Compliance Audit'].map((service) => (
+                      <label key={service} className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={additionalServices.includes(service)}
+                          onChange={() => toggleService(service)}
+                          className="w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                        />
+                        <span className="text-gray-700">{service}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Special Requirements
+                  </label>
+                  <textarea
+                    value={specialRequirements}
+                    onChange={(e) => setSpecialRequirements(e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
+                    placeholder="Any specific requirements or preferences..."
+                  />
+                </div>
+
+                {serviceType && (
+                  <div className="bg-pink-50 border border-pink-200 rounded-lg p-6">
+                    <p className="text-sm text-gray-600 mb-2">Estimated Monthly Cost</p>
+                    <p className="text-4xl font-bold text-[#ec008c]">£{estimatedCost.toFixed(2)}</p>
+                    <p className="text-sm text-purple-600 mt-2">
+                      This is an estimate. Final pricing will be confirmed in your quote.
+                    </p>
+                    {serviceType === 'period-dignity' && employeeCount > 0 && (
+                      <p className="text-sm text-gray-600 mt-2">
+                        Approximately £{(estimatedCost / employeeCount).toFixed(2)} per employee per month
+                      </p>
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Message <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                required
-                rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder={
-                  formType === 'general'
-                    ? 'Tell us how we can help...'
-                    : 'Please provide details about your requirements...'
-                }
-              />
-            </div>
+            {formType === 'general' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Message <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  rows={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  placeholder="Tell us how we can help..."
+                />
+              </div>
+            )}
 
             <button
               type="submit"
