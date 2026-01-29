@@ -15,6 +15,7 @@ interface SiteSettings {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settings, setSettings] = useState<SiteSettings>({
     header_logo_url: '/sanilady-logo-header.png',
     footer_logo_url: '/sanilady-logo-footer.png',
@@ -129,7 +130,115 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
               )}
             </div>
+
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden text-gray-700 hover:text-pink-600 focus:outline-none"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {mobileMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
+
+          {mobileMenuOpen && (
+            <div className="lg:hidden py-4 border-t border-gray-200">
+              <div className="flex flex-col space-y-3">
+                <Link
+                  to="/"
+                  className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/period-dignity"
+                  className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Period Dignity
+                </Link>
+                <Link
+                  to="/waste-services"
+                  className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Waste Services
+                </Link>
+                <Link
+                  to="/news"
+                  className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  News
+                </Link>
+                <Link
+                  to="/about"
+                  className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+                <Link
+                  to="/contact"
+                  className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+                {user ? (
+                  <>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Admin
+                      </Link>
+                    )}
+                    <Link
+                      to="/dashboard"
+                      className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        handleSignOut();
+                      }}
+                      className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition-all text-left"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/signup"
+                    className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition-all text-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Get a Quote
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 

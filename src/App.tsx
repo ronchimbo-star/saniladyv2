@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
@@ -6,27 +7,34 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
-import QuoteRequest from './pages/QuoteRequest';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminSettings from './pages/AdminSettings';
-import AdminTestimonials from './pages/AdminTestimonials';
-import Contact from './pages/Contact';
-import About from './pages/About';
-import FAQ from './pages/FAQ';
-import PeriodDignity from './pages/PeriodDignity';
-import WasteServices from './pages/WasteServices';
-import ServiceCoverage from './pages/ServiceCoverage';
-import ServiceAreaKent from './pages/ServiceAreaKent';
-import ServiceAreaLondon from './pages/ServiceAreaLondon';
-import ServiceAreaEssex from './pages/ServiceAreaEssex';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
-import CookiePolicy from './pages/CookiePolicy';
-import News from './pages/News';
-import NewsArticle from './pages/NewsArticle';
-import AdminNews from './pages/AdminNews';
-import AdminNewsEdit from './pages/AdminNewsEdit';
+
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const QuoteRequest = lazy(() => import('./pages/QuoteRequest'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AdminSettings = lazy(() => import('./pages/AdminSettings'));
+const AdminTestimonials = lazy(() => import('./pages/AdminTestimonials'));
+const AdminNews = lazy(() => import('./pages/AdminNews'));
+const AdminNewsEdit = lazy(() => import('./pages/AdminNewsEdit'));
+const Contact = lazy(() => import('./pages/Contact'));
+const About = lazy(() => import('./pages/About'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const PeriodDignity = lazy(() => import('./pages/PeriodDignity'));
+const WasteServices = lazy(() => import('./pages/WasteServices'));
+const ServiceCoverage = lazy(() => import('./pages/ServiceCoverage'));
+const ServiceAreaKent = lazy(() => import('./pages/ServiceAreaKent'));
+const ServiceAreaLondon = lazy(() => import('./pages/ServiceAreaLondon'));
+const ServiceAreaEssex = lazy(() => import('./pages/ServiceAreaEssex'));
+const Terms = lazy(() => import('./pages/Terms'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
+const News = lazy(() => import('./pages/News'));
+const NewsArticle = lazy(() => import('./pages/NewsArticle'));
+
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
+  </div>
+);
 
 function App() {
   return (
@@ -34,18 +42,19 @@ function App() {
       <Router>
         <AuthProvider>
           <Layout>
-            <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
             <Route
               path="/quote-request"
               element={
@@ -108,11 +117,12 @@ function App() {
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Layout>
-      </AuthProvider>
-    </Router>
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </Layout>
+        </AuthProvider>
+      </Router>
     </HelmetProvider>
   );
 }
