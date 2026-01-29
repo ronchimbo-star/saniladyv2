@@ -4,6 +4,10 @@ import { supabase } from '../lib/supabase';
 
 export default function QuoteRequest() {
   const { user } = useAuth();
+  const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [serviceType, setServiceType] = useState('');
   const [propertySize, setPropertySize] = useState('');
   const [cleaningFrequency, setCleaningFrequency] = useState('');
@@ -60,6 +64,11 @@ export default function QuoteRequest() {
     setError('');
     setSuccess(false);
 
+    if (!customerName || !customerEmail) {
+      setError('Please provide your name and email');
+      return;
+    }
+
     if (!serviceType) {
       setError('Please select a service type');
       return;
@@ -73,10 +82,14 @@ export default function QuoteRequest() {
     setLoading(true);
 
     try {
-      const { error: submitError } = await supabase
+      const { data: quoteData, error: submitError } = await supabase
         .from('quotes')
         .insert({
           user_id: user!.id,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: customerPhone,
+          company_name: companyName,
           property_type: serviceType,
           property_size: propertySize || 'N/A',
           cleaning_frequency: cleaningFrequency || 'monthly',
@@ -86,13 +99,50 @@ export default function QuoteRequest() {
           special_requirements: specialRequirements,
           estimated_cost: estimatedCost,
           status: 'pending',
-        });
+        })
+        .select()
+        .single();
 
       if (submitError) throw submitError;
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      try {
+        await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+          },
+          body: JSON.stringify({
+            quote: {
+              id: quoteData.id,
+              customer_name: customerName,
+              customer_email: customerEmail,
+              customer_phone: customerPhone,
+              company_name: companyName,
+              service_type: serviceType,
+              property_size: propertySize || 'N/A',
+              employee_count: employeeCount,
+              bin_count: binCount,
+              estimated_cost: estimatedCost,
+              special_requirements: specialRequirements,
+              additional_services: additionalServices,
+            }
+          }),
+        });
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+      }
 
       setSuccess(true);
       setError('');
 
+      setCustomerName('');
+      setCustomerEmail('');
+      setCustomerPhone('');
+      setCompanyName('');
       setServiceType('');
       setPropertySize('');
       setCleaningFrequency('');
@@ -115,6 +165,65 @@ export default function QuoteRequest() {
           <p className="text-gray-600 mb-8">Get an instant estimate for your feminine hygiene solutions</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Information</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="07XXX XXXXXX"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Company Name
+                  </label>
+                  <input
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="Your company name"
+                  />
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Service Type <span className="text-red-500">*</span>

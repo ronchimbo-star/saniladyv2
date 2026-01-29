@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -26,6 +26,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center space-x-6">
               {user ? (
                 <>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
+                    >
+                      Admin
+                    </Link>
+                  )}
                   <Link
                     to="/dashboard"
                     className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
