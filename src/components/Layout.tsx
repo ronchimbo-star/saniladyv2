@@ -15,12 +15,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-24">
             <Link to={user ? '/dashboard' : '/'}>
               <img
                 src="/sanilady-logo-header.png"
                 alt="SaniLady"
-                className="h-10"
+                className="h-20"
               />
             </Link>
 
@@ -36,6 +36,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
               >
                 Waste Services
+              </Link>
+              <Link
+                to="/news"
+                className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
+              >
+                News
               </Link>
               <Link
                 to="/about"

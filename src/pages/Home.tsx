@@ -40,16 +40,16 @@ export default function Home() {
                 ) : (
                   <>
                     <Link
-                      to="/signup"
+                      to="/contact"
                       className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
                     >
-                      Get Started
+                      Get a Quote
                     </Link>
                     <Link
-                      to="/login"
+                      to="/about"
                       className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
                     >
-                      Sign In
+                      Learn More
                     </Link>
                   </>
                 )}
@@ -57,11 +57,12 @@ export default function Home() {
             </div>
 
             <div className="relative flex justify-center items-center">
-              <div className="absolute inset-0 bg-white opacity-10 rounded-full blur-3xl transform scale-75"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute inset-0 bg-white opacity-5 rounded-full blur-2xl transform scale-90 animate-pulse" style={{animationDelay: '1s'}}></div>
               <img
                 src="/sanilady-hero.png"
                 alt="SaniLady Period Dignity"
-                className="relative w-full max-w-lg drop-shadow-2xl transform hover:scale-105 transition-transform duration-500 animate-float"
+                className="relative w-full max-w-2xl drop-shadow-2xl transform hover:scale-110 transition-transform duration-700 animate-float"
               />
             </div>
           </div>
