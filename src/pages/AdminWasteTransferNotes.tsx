@@ -5,11 +5,15 @@ import { supabase } from '../lib/supabase';
 interface WasteTransferNote {
   id: string;
   customer_id: string;
-  invoice_id: string | null;
-  document_type: string;
-  document_path: string;
   reference_number: string;
   issue_date: string;
+  collection_address: string;
+  waste_classification: string;
+  waste_description: string;
+  waste_quantity: string;
+  ewc_code: string;
+  notes: string | null;
+  document_path: string;
   created_at: string;
   customers: {
     company_name: string;
@@ -30,12 +34,11 @@ export default function AdminWasteTransferNotes() {
   async function fetchDocuments() {
     try {
       const { data, error } = await supabase
-        .from('documents')
+        .from('waste_transfer_notes')
         .select(`
           *,
           customers(company_name, postcode)
         `)
-        .eq('document_type', 'waste_carrier_note')
         .order('issue_date', { ascending: false });
 
       if (error) throw error;
@@ -117,8 +120,8 @@ export default function AdminWasteTransferNotes() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-500">This Month</p>
                 <p className="mt-2 text-3xl font-bold text-pink-600">
-                  {documents.filter(d => {
-                    const issueDate = new Date(d.issue_date);
+                  {documents.filter(wtn => {
+                    const issueDate = new Date(wtn.issue_date);
                     const now = new Date();
                     return issueDate.getMonth() === now.getMonth() &&
                            issueDate.getFullYear() === now.getFullYear();
@@ -133,8 +136,8 @@ export default function AdminWasteTransferNotes() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-500">This Year</p>
                 <p className="mt-2 text-3xl font-bold text-blue-600">
-                  {documents.filter(d => {
-                    const issueDate = new Date(d.issue_date);
+                  {documents.filter(wtn => {
+                    const issueDate = new Date(wtn.issue_date);
                     const now = new Date();
                     return issueDate.getFullYear() === now.getFullYear();
                   }).length}

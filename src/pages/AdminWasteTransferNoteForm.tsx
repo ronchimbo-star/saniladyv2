@@ -10,8 +10,8 @@ interface WasteTransferNoteForm {
   waste_quantity: string;
   waste_classification: string;
   collection_address: string;
-  disposal_site: string;
-  carrier_details: string;
+  ewc_code: string;
+  notes: string;
 }
 
 interface Customer {
@@ -32,12 +32,12 @@ export default function AdminWasteTransferNoteForm() {
     customer_id: '',
     reference_number: `WTN-${Date.now()}`,
     issue_date: new Date().toISOString().split('T')[0],
-    waste_description: '',
+    waste_description: 'Sanitary hygiene waste from feminine hygiene units',
     waste_quantity: '',
     waste_classification: 'sanitary_waste',
     collection_address: '',
-    disposal_site: '',
-    carrier_details: 'SaniLady Waste Services',
+    ewc_code: '18 01 04',
+    notes: '',
   });
 
   useEffect(() => {
@@ -83,12 +83,17 @@ export default function AdminWasteTransferNoteForm() {
     setError('');
 
     try {
-      const { error } = await supabase.from('documents').insert({
+      const { error } = await supabase.from('waste_transfer_notes').insert({
         customer_id: formData.customer_id,
-        document_type: 'waste_carrier_note',
-        document_path: `/waste-transfer-notes/${formData.reference_number}.pdf`,
         reference_number: formData.reference_number,
         issue_date: formData.issue_date,
+        collection_address: formData.collection_address,
+        waste_classification: formData.waste_classification,
+        waste_description: formData.waste_description,
+        waste_quantity: formData.waste_quantity,
+        ewc_code: formData.ewc_code,
+        notes: formData.notes || null,
+        document_path: `/waste-transfer-notes/${formData.reference_number}.pdf`,
       });
 
       if (error) throw error;
@@ -120,6 +125,16 @@ export default function AdminWasteTransferNoteForm() {
         )}
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <h3 className="text-sm font-medium text-blue-900 mb-2">Licensed Waste Carrier Information</h3>
+            <div className="text-sm text-blue-800 space-y-1">
+              <p><strong>Carrier:</strong> WECLEAN4U LTD</p>
+              <p><strong>Registration Number:</strong> CBDU542939</p>
+              <p><strong>Address:</strong> 56 Craydene Road, Erith, DA8 2HA</p>
+              <p><strong>Registration Valid Until:</strong> 9 July 2027</p>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label htmlFor="customer_id" className="block text-sm font-medium text-gray-700 mb-2">
@@ -171,7 +186,7 @@ export default function AdminWasteTransferNoteForm() {
 
             <div className="md:col-span-2">
               <label htmlFor="collection_address" className="block text-sm font-medium text-gray-700 mb-2">
-                Collection Address *
+                Collection Address (Customer Address) *
               </label>
               <textarea
                 id="collection_address"
@@ -181,6 +196,15 @@ export default function AdminWasteTransferNoteForm() {
                 onChange={(e) => setFormData({ ...formData, collection_address: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Disposal Site Address
+              </label>
+              <div className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-600">
+                To be determined by WeClean4U disposal team
+              </div>
             </div>
 
             <div className="md:col-span-2">
@@ -194,7 +218,7 @@ export default function AdminWasteTransferNoteForm() {
                 onChange={(e) => setFormData({ ...formData, waste_classification: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               >
-                <option value="sanitary_waste">Sanitary Waste</option>
+                <option value="sanitary_waste">Sanitary Waste (Non-Hazardous)</option>
                 <option value="general_waste">General Waste</option>
                 <option value="recyclable">Recyclable Materials</option>
                 <option value="hazardous">Hazardous Waste</option>
@@ -202,19 +226,20 @@ export default function AdminWasteTransferNoteForm() {
               </select>
             </div>
 
-            <div className="md:col-span-2">
-              <label htmlFor="waste_description" className="block text-sm font-medium text-gray-700 mb-2">
-                Waste Description *
+            <div>
+              <label htmlFor="ewc_code" className="block text-sm font-medium text-gray-700 mb-2">
+                EWC Code *
               </label>
-              <textarea
-                id="waste_description"
+              <input
+                type="text"
+                id="ewc_code"
                 required
-                rows={3}
-                value={formData.waste_description}
-                onChange={(e) => setFormData({ ...formData, waste_description: e.target.value })}
-                placeholder="Describe the type of waste collected..."
+                value={formData.ewc_code}
+                onChange={(e) => setFormData({ ...formData, ewc_code: e.target.value })}
+                placeholder="e.g., 18 01 04"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
+              <p className="mt-1 text-xs text-gray-500">European Waste Catalogue Code (18 01 04 for sanitary waste)</p>
             </div>
 
             <div>
@@ -232,31 +257,30 @@ export default function AdminWasteTransferNoteForm() {
               />
             </div>
 
-            <div>
-              <label htmlFor="carrier_details" className="block text-sm font-medium text-gray-700 mb-2">
-                Carrier Details *
+            <div className="md:col-span-2">
+              <label htmlFor="waste_description" className="block text-sm font-medium text-gray-700 mb-2">
+                Waste Description *
               </label>
-              <input
-                type="text"
-                id="carrier_details"
+              <textarea
+                id="waste_description"
                 required
-                value={formData.carrier_details}
-                onChange={(e) => setFormData({ ...formData, carrier_details: e.target.value })}
+                rows={3}
+                value={formData.waste_description}
+                onChange={(e) => setFormData({ ...formData, waste_description: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label htmlFor="disposal_site" className="block text-sm font-medium text-gray-700 mb-2">
-                Disposal Site *
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Notes
               </label>
-              <input
-                type="text"
-                id="disposal_site"
-                required
-                value={formData.disposal_site}
-                onChange={(e) => setFormData({ ...formData, disposal_site: e.target.value })}
-                placeholder="Address of disposal/treatment facility"
+              <textarea
+                id="notes"
+                rows={2}
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Any additional information..."
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>
