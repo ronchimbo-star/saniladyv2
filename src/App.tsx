@@ -10,6 +10,11 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const CustomerProfile = lazy(() => import('./pages/CustomerProfile'));
+const CustomerSubscriptions = lazy(() => import('./pages/CustomerSubscriptions'));
+const CustomerBookService = lazy(() => import('./pages/CustomerBookService'));
+const CustomerInvoices = lazy(() => import('./pages/CustomerInvoices'));
+const CustomerDocuments = lazy(() => import('./pages/CustomerDocuments'));
 const QuoteRequest = lazy(() => import('./pages/QuoteRequest'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const AdminSettings = lazy(() => import('./pages/AdminSettings'));
@@ -63,6 +68,46 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/profile"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerProfile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/subscriptions"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerSubscriptions />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/book-service"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerBookService />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/invoices"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerInvoices />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/documents"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerDocuments />
                     </ProtectedRoute>
                   }
                 />
