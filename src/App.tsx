@@ -16,6 +16,15 @@ const AdminSettings = lazy(() => import('./pages/AdminSettings'));
 const AdminTestimonials = lazy(() => import('./pages/AdminTestimonials'));
 const AdminNews = lazy(() => import('./pages/AdminNews'));
 const AdminNewsEdit = lazy(() => import('./pages/AdminNewsEdit'));
+const AdminCustomers = lazy(() => import('./pages/AdminCustomers'));
+const AdminCustomerDetail = lazy(() => import('./pages/AdminCustomerDetail'));
+const AdminCustomerForm = lazy(() => import('./pages/AdminCustomerForm'));
+const AdminSubscriptions = lazy(() => import('./pages/AdminSubscriptions'));
+const AdminSubscriptionForm = lazy(() => import('./pages/AdminSubscriptionForm'));
+const AdminServiceVisits = lazy(() => import('./pages/AdminServiceVisits'));
+const AdminServiceVisitForm = lazy(() => import('./pages/AdminServiceVisitForm'));
+const AdminWasteTransferNotes = lazy(() => import('./pages/AdminWasteTransferNotes'));
+const AdminWasteTransferNoteForm = lazy(() => import('./pages/AdminWasteTransferNoteForm'));
 const Contact = lazy(() => import('./pages/Contact'));
 const About = lazy(() => import('./pages/About'));
 const FAQ = lazy(() => import('./pages/FAQ'));
@@ -102,6 +111,86 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminTestimonials />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/customers"
+              element={
+                <ProtectedRoute>
+                  <AdminCustomers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/customers/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminCustomerDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/customers/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminCustomerForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/subscriptions"
+              element={
+                <ProtectedRoute>
+                  <AdminSubscriptions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/subscriptions/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminSubscriptionForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/service-visits"
+              element={
+                <ProtectedRoute>
+                  <AdminServiceVisits />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/service-visits/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminServiceVisitForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/service-visits/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminServiceVisitForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/waste-transfer-notes"
+              element={
+                <ProtectedRoute>
+                  <AdminWasteTransferNotes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/waste-transfer-notes/new"
+              element={
+                <ProtectedRoute>
+                  <AdminWasteTransferNoteForm />
                 </ProtectedRoute>
               }
             />

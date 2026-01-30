@@ -153,6 +153,22 @@ export default function AdminDashboard() {
               <span>📋</span>
               <span>Quote Requests</span>
             </a>
+            <Link to="/admin/customers" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <span>👥</span>
+              <span>Customers</span>
+            </Link>
+            <Link to="/admin/subscriptions" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <span>🔄</span>
+              <span>Subscriptions</span>
+            </Link>
+            <Link to="/admin/service-visits" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <span>📅</span>
+              <span>Service Visits</span>
+            </Link>
+            <Link to="/admin/waste-transfer-notes" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <span>📝</span>
+              <span>Waste Transfer Notes</span>
+            </Link>
             <Link to="/admin/news" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>📰</span>
               <span>News Articles</span>
@@ -161,14 +177,6 @@ export default function AdminDashboard() {
               <span>💬</span>
               <span>Testimonials</span>
             </Link>
-            <a href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-              <span>📄</span>
-              <span>Static Pages</span>
-            </a>
-            <a href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-              <span>🖼️</span>
-              <span>Media Library</span>
-            </a>
             <Link to="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>⚙️</span>
               <span>Site Settings</span>
