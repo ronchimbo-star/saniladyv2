@@ -77,10 +77,12 @@ export default function AdminSettings() {
       if (updateError) throw updateError;
 
       setSuccess(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error('Error updating settings:', err);
       setError('Failed to update settings. Please try again.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSaving(false);
     }

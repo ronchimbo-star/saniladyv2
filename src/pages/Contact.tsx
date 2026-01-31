@@ -267,9 +267,11 @@ export default function Contact() {
       setAdditionalServices([]);
       setSpecialRequirements('');
 
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
       setError('Failed to submit your message. Please try again or email us directly.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setLoading(false);
     }

@@ -97,10 +97,12 @@ export default function AdminTestimonials() {
 
       resetForm();
       fetchTestimonials();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error('Error saving testimonial:', err);
       setError('Failed to save testimonial');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

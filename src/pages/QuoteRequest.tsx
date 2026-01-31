@@ -158,8 +158,11 @@ export default function QuoteRequest() {
       setNeedsBinRental(false);
       setAdditionalServices([]);
       setSpecialRequirements('');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError('Failed to submit quote request. Please try again or contact us directly.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setLoading(false);
     }

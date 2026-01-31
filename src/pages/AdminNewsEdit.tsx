@@ -104,11 +104,13 @@ export default function AdminNewsEdit() {
 
     if (!formData.title || !formData.slug || !formData.content) {
       setError('Please fill in all required fields');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (formData.meta_description.length > 160) {
       setError('Meta description must be 160 characters or less');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -139,6 +141,7 @@ export default function AdminNewsEdit() {
     } catch (err: any) {
       console.error('Error saving article:', err);
       setError(err.message || 'Failed to save article');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSaving(false);
     }
