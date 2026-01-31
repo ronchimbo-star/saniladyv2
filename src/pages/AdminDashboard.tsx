@@ -25,50 +25,27 @@ interface Quote {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, isAdmin: userIsAdmin } = useAuth();
   const navigate = useNavigate();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [quoteStatus, setQuoteStatus] = useState('');
 
   useEffect(() => {
-    checkAdminRole();
-  }, [user]);
-
-  useEffect(() => {
-    if (isAdmin) {
-      fetchQuotes();
-    }
-  }, [isAdmin]);
-
-  const checkAdminRole = async () => {
     if (!user) {
       navigate('/login');
       return;
     }
 
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (data?.role === 'admin') {
-        setIsAdmin(true);
-      } else {
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      console.error('Error checking admin role:', error);
+    if (!userIsAdmin) {
       navigate('/dashboard');
+      return;
     }
-  };
+
+    fetchQuotes();
+  }, [user, userIsAdmin, navigate]);
 
   const fetchQuotes = async () => {
     try {
@@ -128,7 +105,7 @@ export default function AdminDashboard() {
     }
   };
 
-  if (!isAdmin) {
+  if (!userIsAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
@@ -343,7 +320,7 @@ export default function AdminDashboard() {
                         </div>
                       )}
                     </div>
-                    {selectedQuote.additional_services.length > 0 && (
+                    {selectedQuote.additional_services && selectedQuote.additional_services.length > 0 && (
                       <div className="mt-4">
                         <p className="text-sm text-gray-600">Additional Services</p>
                         <p className="font-medium">{selectedQuote.additional_services.join(', ')}</p>
