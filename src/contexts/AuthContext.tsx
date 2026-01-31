@@ -21,44 +21,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) {
-        await checkAdminRole();
-      }
+      const role = session?.user?.user_metadata?.role;
+      setIsAdmin(role === 'admin');
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      (() => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          checkAdminRole();
-        } else {
-          setIsAdmin(false);
-        }
-      })();
+      setSession(session);
+      setUser(session?.user ?? null);
+      const role = session?.user?.user_metadata?.role;
+      setIsAdmin(role === 'admin');
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const checkAdminRole = async () => {
-    try {
-      const { data: userData, error } = await supabase.auth.getUser();
-
-      if (!error && userData?.user) {
-        const role = userData.user.user_metadata?.role;
-        setIsAdmin(role === 'admin');
-      } else {
-        setIsAdmin(false);
-      }
-    } catch (error) {
-      setIsAdmin(false);
-    }
-  };
 
   const signIn = async (email: string, password: string) => {
     try {
