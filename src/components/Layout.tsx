@@ -100,20 +100,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Link>
               {user ? (
                 <>
-                  {isAdmin && (
+                  {isAdmin ? (
                     <Link
-                      to="/admin"
+                      to="/admin/dashboard"
                       className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
                     >
                       Admin
                     </Link>
+                  ) : (
+                    <Link
+                      to="/dashboard"
+                      className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
+                    >
+                      Dashboard
+                    </Link>
                   )}
-                  <Link
-                    to="/dashboard"
-                    className="text-gray-700 hover:text-pink-600 font-medium transition-colors"
-                  >
-                    Dashboard
-                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
@@ -201,22 +202,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
                 {user ? (
                   <>
-                    {isAdmin && (
+                    {isAdmin ? (
                       <Link
-                        to="/admin"
+                        to="/admin/dashboard"
                         className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         Admin
                       </Link>
+                    ) : (
+                      <Link
+                        to="/dashboard"
+                        className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
                     )}
-                    <Link
-                      to="/dashboard"
-                      className="text-gray-700 hover:text-pink-600 font-medium transition-colors py-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
                     <button
                       onClick={() => {
                         setMobileMenuOpen(false);
