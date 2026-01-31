@@ -9,7 +9,7 @@ interface ServiceVisitForm {
   scheduled_time: string;
   status: string;
   notes: string;
-  bin_count: number;
+  bin_count: number | string;
 }
 
 interface Customer {
@@ -39,7 +39,7 @@ export default function AdminServiceVisitForm() {
     scheduled_time: '09:00',
     status: 'scheduled',
     notes: '',
-    bin_count: 1,
+    bin_count: '',
   });
 
   const isEditMode = id !== 'new';
@@ -150,7 +150,7 @@ export default function AdminServiceVisitForm() {
         scheduled_date: scheduledDateTime.toISOString(),
         status: formData.status,
         notes: formData.notes || null,
-        bin_count: formData.bin_count,
+        bin_count: parseInt(formData.bin_count as string) || 1,
       };
 
       if (isEditMode) {
@@ -276,7 +276,7 @@ export default function AdminServiceVisitForm() {
                 required
                 min="1"
                 value={formData.bin_count}
-                onChange={(e) => setFormData({ ...formData, bin_count: parseInt(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, bin_count: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>

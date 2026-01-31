@@ -5,12 +5,12 @@ import { supabase } from '../lib/supabase';
 interface SubscriptionForm {
   customer_id: string;
   service_id: string;
-  bin_count: number;
+  bin_count: number | string;
   frequency: string;
   contract_length: string;
   start_date: string;
   end_date: string;
-  monthly_price: number;
+  monthly_price: number | string;
   status: string;
 }
 
@@ -37,12 +37,12 @@ export default function AdminSubscriptionForm() {
   const [formData, setFormData] = useState<SubscriptionForm>({
     customer_id: searchParams.get('customer_id') || '',
     service_id: '',
-    bin_count: 1,
+    bin_count: '',
     frequency: 'weekly',
     contract_length: 'monthly',
     start_date: new Date().toISOString().split('T')[0],
     end_date: '',
-    monthly_price: 0,
+    monthly_price: '',
     status: 'active',
   });
 
@@ -129,12 +129,12 @@ export default function AdminSubscriptionForm() {
       const subscriptionData = {
         customer_id: formData.customer_id,
         service_id: formData.service_id,
-        bin_count: formData.bin_count,
+        bin_count: parseInt(formData.bin_count as string) || 1,
         frequency: formData.frequency,
         contract_length: formData.contract_length,
         start_date: formData.start_date,
         end_date: formData.end_date || null,
-        monthly_price: formData.monthly_price,
+        monthly_price: parseFloat(formData.monthly_price as string) || 0,
         status: formData.status,
       };
 
@@ -238,7 +238,7 @@ export default function AdminSubscriptionForm() {
                 required
                 min="1"
                 value={formData.bin_count}
-                onChange={(e) => setFormData({ ...formData, bin_count: parseInt(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, bin_count: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>
@@ -288,7 +288,7 @@ export default function AdminSubscriptionForm() {
                 min="0"
                 step="0.01"
                 value={formData.monthly_price}
-                onChange={(e) => setFormData({ ...formData, monthly_price: parseFloat(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, monthly_price: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>

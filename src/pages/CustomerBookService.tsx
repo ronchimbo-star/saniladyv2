@@ -23,7 +23,7 @@ export default function CustomerBookService() {
     service_type: 'ad_hoc_collection',
     preferred_date: '',
     preferred_time: 'morning',
-    bin_count: 1,
+    bin_count: '' as string | number,
     special_instructions: '',
   });
 
@@ -63,7 +63,7 @@ export default function CustomerBookService() {
         customer_id: customer.id,
         scheduled_date: scheduledDate.toISOString(),
         status: 'scheduled',
-        bin_count: formData.bin_count,
+        bin_count: parseInt(formData.bin_count as string) || 1,
         notes: `Ad-hoc service request. Time preference: ${formData.preferred_time}. ${formData.special_instructions}`,
       });
 
@@ -185,7 +185,7 @@ export default function CustomerBookService() {
               min="1"
               max="20"
               value={formData.bin_count}
-              onChange={(e) => setFormData({ ...formData, bin_count: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, bin_count: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             />
           </div>

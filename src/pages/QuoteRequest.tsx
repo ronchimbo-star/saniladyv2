@@ -11,8 +11,8 @@ export default function QuoteRequest() {
   const [serviceType, setServiceType] = useState('');
   const [propertySize, setPropertySize] = useState('');
   const [cleaningFrequency, setCleaningFrequency] = useState('');
-  const [employeeCount, setEmployeeCount] = useState(0);
-  const [binCount, setBinCount] = useState(0);
+  const [employeeCount, setEmployeeCount] = useState('');
+  const [binCount, setBinCount] = useState('');
   const [binCollectionFrequency, setBinCollectionFrequency] = useState('monthly');
   const [needsBinRental, setNeedsBinRental] = useState(false);
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
@@ -28,24 +28,26 @@ export default function QuoteRequest() {
 
   const calculateEstimate = () => {
     let base = 0;
+    const empCount = parseInt(employeeCount as string) || 0;
+    const bins = parseInt(binCount as string) || 0;
 
     if (serviceType === 'dignity-at-work') {
-      base = employeeCount * 60;
+      base = empCount * 60;
     } else if (serviceType === 'waste-management') {
       if (propertySize === 'small') base = 50;
       else if (propertySize === 'medium') base = 75;
       else if (propertySize === 'large') base = 120;
       else if (propertySize === 'extra-large') base = 180;
 
-      base += binCount * 15;
+      base += bins * 15;
     } else if (serviceType === 'both') {
-      base = employeeCount * 55;
+      base = empCount * 55;
       if (propertySize === 'small') base += 40;
       else if (propertySize === 'medium') base += 60;
       else if (propertySize === 'large') base += 100;
       else if (propertySize === 'extra-large') base += 150;
 
-      base += binCount * 12;
+      base += bins * 12;
     }
 
     base += additionalServices.length * 25;
@@ -95,9 +97,9 @@ export default function QuoteRequest() {
           property_type: serviceType,
           property_size: propertySize || 'N/A',
           cleaning_frequency: cleaningFrequency || 'monthly',
-          bedrooms: employeeCount,
-          bathrooms: binCount,
-          number_of_bins: binCount,
+          bedrooms: parseInt(employeeCount as string) || 0,
+          bathrooms: parseInt(binCount as string) || 0,
+          number_of_bins: parseInt(binCount as string) || 0,
           bin_collection_frequency: binCollectionFrequency,
           needs_bin_rental: needsBinRental,
           additional_services: additionalServices,
@@ -126,8 +128,8 @@ export default function QuoteRequest() {
               company_name: companyName,
               service_type: serviceType,
               property_size: propertySize || 'N/A',
-              employee_count: employeeCount,
-              bin_count: binCount,
+              employee_count: parseInt(employeeCount as string) || 0,
+              bin_count: parseInt(binCount as string) || 0,
               bin_collection_frequency: binCollectionFrequency,
               needs_bin_rental: needsBinRental,
               estimated_cost: estimatedCost,
@@ -150,8 +152,8 @@ export default function QuoteRequest() {
       setServiceType('');
       setPropertySize('');
       setCleaningFrequency('');
-      setEmployeeCount(0);
-      setBinCount(0);
+      setEmployeeCount('');
+      setBinCount('');
       setBinCollectionFrequency('monthly');
       setNeedsBinRental(false);
       setAdditionalServices([]);
@@ -257,7 +259,7 @@ export default function QuoteRequest() {
                   type="number"
                   min="0"
                   value={employeeCount}
-                  onChange={(e) => setEmployeeCount(parseInt(e.target.value) || 0)}
+                  onChange={(e) => setEmployeeCount(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   placeholder="Approximate number"
                 />
@@ -292,7 +294,7 @@ export default function QuoteRequest() {
                     type="number"
                     min="0"
                     value={binCount}
-                    onChange={(e) => setBinCount(parseInt(e.target.value) || 0)}
+                    onChange={(e) => setBinCount(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     placeholder="Estimated number of bins"
                   />
@@ -371,9 +373,9 @@ export default function QuoteRequest() {
                 <p className="text-sm text-purple-600 mt-2">
                   This is an estimate. Final pricing will be confirmed in your quote.
                 </p>
-                {serviceType === 'dignity-at-work' && employeeCount > 0 && (
+                {serviceType === 'dignity-at-work' && parseInt(employeeCount as string) > 0 && (
                   <p className="text-sm text-gray-600 mt-2">
-                    Approximately £{(estimatedCost / employeeCount).toFixed(2)} per employee per month
+                    Approximately £{(estimatedCost / parseInt(employeeCount as string)).toFixed(2)} per employee per month
                   </p>
                 )}
               </div>

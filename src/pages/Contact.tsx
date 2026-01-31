@@ -17,8 +17,8 @@ export default function Contact() {
   const [message, setMessage] = useState('');
   const [serviceType, setServiceType] = useState('');
   const [propertySize, setPropertySize] = useState('');
-  const [employeeCount, setEmployeeCount] = useState(0);
-  const [binCount, setBinCount] = useState(0);
+  const [employeeCount, setEmployeeCount] = useState('');
+  const [binCount, setBinCount] = useState('');
   const [binCollectionFrequency, setBinCollectionFrequency] = useState('monthly');
   const [needsBinRental, setNeedsBinRental] = useState(false);
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
@@ -63,9 +63,11 @@ export default function Contact() {
 
   const calculateEstimate = () => {
     let base = 0;
+    const empCount = parseInt(employeeCount as string) || 0;
+    const bins = parseInt(binCount as string) || 0;
 
     if (serviceType === 'period-dignity') {
-      base = employeeCount * 35;
+      base = empCount * 35;
     } else if (serviceType === 'waste-management') {
       if (propertySize === 'small') base = 45;
       else if (propertySize === 'medium') base = 65;
@@ -73,33 +75,33 @@ export default function Contact() {
       else if (propertySize === 'extra-large') base = 140;
 
       if (binCollectionFrequency === 'weekly') {
-        base += binCount * 10;
+        base += bins * 10;
       } else if (binCollectionFrequency === 'fortnightly') {
-        base += binCount * 7;
+        base += bins * 7;
       } else {
-        base += binCount * 5;
+        base += bins * 5;
       }
 
       if (needsBinRental) {
-        base += binCount * 3;
+        base += bins * 3;
       }
     } else if (serviceType === 'both') {
-      base = employeeCount * 30;
+      base = empCount * 30;
       if (propertySize === 'small') base += 35;
       else if (propertySize === 'medium') base += 50;
       else if (propertySize === 'large') base += 75;
       else if (propertySize === 'extra-large') base += 110;
 
       if (binCollectionFrequency === 'weekly') {
-        base += binCount * 8;
+        base += bins * 8;
       } else if (binCollectionFrequency === 'fortnightly') {
-        base += binCount * 6;
+        base += bins * 6;
       } else {
-        base += binCount * 4;
+        base += bins * 4;
       }
 
       if (needsBinRental) {
-        base += binCount * 2.5;
+        base += bins * 2.5;
       }
     }
 
@@ -156,9 +158,9 @@ export default function Contact() {
             property_type: serviceType,
             property_size: propertySize || 'N/A',
             cleaning_frequency: 'monthly',
-            bedrooms: employeeCount,
-            bathrooms: binCount,
-            number_of_bins: binCount,
+            bedrooms: parseInt(employeeCount as string) || 0,
+            bathrooms: parseInt(binCount as string) || 0,
+            number_of_bins: parseInt(binCount as string) || 0,
             bin_collection_frequency: binCollectionFrequency,
             needs_bin_rental: needsBinRental,
             additional_services: additionalServices,
@@ -188,8 +190,8 @@ export default function Contact() {
                   company_name: company,
                   service_type: serviceType,
                   property_size: propertySize || 'N/A',
-                  employee_count: employeeCount,
-                  bin_count: binCount,
+                  employee_count: parseInt(employeeCount as string) || 0,
+                  bin_count: parseInt(binCount as string) || 0,
                   bin_collection_frequency: binCollectionFrequency,
                   needs_bin_rental: needsBinRental,
                   estimated_cost: estimatedCost,
@@ -258,8 +260,8 @@ export default function Contact() {
       setMessage('');
       setServiceType('');
       setPropertySize('');
-      setEmployeeCount(0);
-      setBinCount(0);
+      setEmployeeCount('');
+      setBinCount('');
       setBinCollectionFrequency('monthly');
       setNeedsBinRental(false);
       setAdditionalServices([]);
@@ -442,7 +444,7 @@ export default function Contact() {
                       type="number"
                       min="0"
                       value={employeeCount}
-                      onChange={(e) => setEmployeeCount(parseInt(e.target.value) || 0)}
+                      onChange={(e) => setEmployeeCount(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                       placeholder="Approximate number"
                     />
@@ -477,7 +479,7 @@ export default function Contact() {
                         type="number"
                         min="0"
                         value={binCount}
-                        onChange={(e) => setBinCount(parseInt(e.target.value) || 0)}
+                        onChange={(e) => setBinCount(e.target.value)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                         placeholder="Estimated number of bins"
                       />
@@ -556,9 +558,9 @@ export default function Contact() {
                     <p className="text-sm text-purple-600 mt-2">
                       This is an estimate. Final pricing will be confirmed in your quote.
                     </p>
-                    {serviceType === 'period-dignity' && employeeCount > 0 && (
+                    {serviceType === 'period-dignity' && parseInt(employeeCount as string) > 0 && (
                       <p className="text-sm text-gray-600 mt-2">
-                        Approximately £{(estimatedCost / employeeCount).toFixed(2)} per employee per month
+                        Approximately £{(estimatedCost / parseInt(employeeCount as string)).toFixed(2)} per employee per month
                       </p>
                     )}
                   </div>

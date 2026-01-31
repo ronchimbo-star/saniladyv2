@@ -35,7 +35,7 @@ export default function AdminTestimonials() {
     rating: 5,
     image_url: '',
     is_published: true,
-    display_order: 0
+    display_order: '' as string | number
   });
 
   useEffect(() => {
@@ -70,11 +70,16 @@ export default function AdminTestimonials() {
     setSuccess('');
 
     try {
+      const testimonialData = {
+        ...formData,
+        display_order: parseInt(formData.display_order as string) || 0
+      };
+
       if (editingId) {
         const { error: updateError } = await supabase
           .from('testimonials')
           .update({
-            ...formData,
+            ...testimonialData,
             updated_at: new Date().toISOString()
           })
           .eq('id', editingId);
@@ -84,7 +89,7 @@ export default function AdminTestimonials() {
       } else {
         const { error: insertError } = await supabase
           .from('testimonials')
-          .insert([formData]);
+          .insert([testimonialData]);
 
         if (insertError) throw insertError;
         setSuccess('Testimonial created successfully!');
@@ -291,9 +296,9 @@ export default function AdminTestimonials() {
                     <input
                       type="number"
                       value={formData.display_order}
-                      onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                      onChange={(e) => setFormData({ ...formData, display_order: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                      placeholder="0"
+                      placeholder="Display order (0 for default)"
                     />
                   </div>
                 </div>
