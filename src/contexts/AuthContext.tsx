@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminRole(session.user.id);
+        checkAdminRole();
       }
       setLoading(false);
     });
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          checkAdminRole(session.user.id);
+          checkAdminRole();
         } else {
           setIsAdmin(false);
         }
@@ -45,16 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkAdminRole = async (userId: string) => {
+  const checkAdminRole = async () => {
     try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('role')
-        .eq('id', userId)
-        .maybeSingle();
+      const { data: userData, error } = await supabase.auth.getUser();
 
-      if (!error && data?.role === 'admin') {
-        setIsAdmin(true);
+      if (!error && userData?.user) {
+        const role = userData.user.user_metadata?.role;
+        setIsAdmin(role === 'admin');
       } else {
         setIsAdmin(false);
       }

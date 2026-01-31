@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Customer {
   id: string;
@@ -42,7 +42,8 @@ interface Invoice {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [upcomingVisits, setUpcomingVisits] = useState<ServiceVisit[]>([]);
@@ -50,10 +51,14 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (isAdmin) {
+      navigate('/admin/dashboard');
+      return;
+    }
     if (user) {
       fetchCustomerData();
     }
-  }, [user]);
+  }, [user, isAdmin, navigate]);
 
   async function fetchCustomerData() {
     try {
