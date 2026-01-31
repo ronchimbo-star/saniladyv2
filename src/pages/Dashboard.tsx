@@ -42,7 +42,7 @@ interface Invoice {
 }
 
 export default function Dashboard() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -51,14 +51,19 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
     if (isAdmin) {
       navigate('/admin/dashboard');
       return;
     }
     if (user) {
       fetchCustomerData();
+    } else {
+      setLoading(false);
     }
-  }, [user, isAdmin, navigate]);
+  }, [user, isAdmin, authLoading, navigate]);
 
   async function fetchCustomerData() {
     try {
@@ -125,7 +130,7 @@ export default function Dashboard() {
     }
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
