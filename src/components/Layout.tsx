@@ -287,6 +287,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     Request a Quote
                   </Link>
                 </li>
+                <li>
+                  <a
+                    href="https://medicalwastedirectory.co.uk/directory/24ebcb04-39b8-4477-9ba7-58511a157d9d"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-pink-400 transition-colors inline-block"
+                  >
+                    As featured on <span className="inline">Medical <span className="text-[#ec008c] font-semibold">WASTE</span> Directory</span>
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
@@ -311,6 +321,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <Link to="/contact" className="hover:text-pink-400 transition-colors">
                     Contact Us
                   </Link>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/company/saniladyfemininehygiene"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-pink-400 transition-colors flex items-center gap-2"
+                  >
+                    <img src="/linkedin.png" alt="LinkedIn" className="h-4 w-4" />
+                    Visit us on LinkedIn
+                  </a>
                 </li>
               </ul>
             </div>
