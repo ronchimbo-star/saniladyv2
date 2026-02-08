@@ -20,6 +20,8 @@ interface Quote {
   status: string;
   viewed_by_admin: boolean;
   admin_notes: string;
+  archived: boolean;
+  archived_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -33,6 +35,7 @@ export default function AdminDashboard() {
   const [adminNotes, setAdminNotes] = useState('');
   const [quoteStatus, setQuoteStatus] = useState('');
   const [unviewedCount, setUnviewedCount] = useState(0);
+  const [viewArchived, setViewArchived] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -48,17 +51,24 @@ export default function AdminDashboard() {
     fetchQuotes();
   }, [user, userIsAdmin, navigate]);
 
+  useEffect(() => {
+    if (user && userIsAdmin) {
+      fetchQuotes();
+    }
+  }, [viewArchived]);
+
   const fetchQuotes = async () => {
     try {
       const { data, error } = await supabase
         .from('quotes')
         .select('*')
+        .eq('archived', viewArchived)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       setQuotes(data || []);
 
-      const unviewed = (data || []).filter(q => !q.viewed_by_admin).length;
+      const unviewed = (data || []).filter(q => !q.viewed_by_admin && !q.archived).length;
       setUnviewedCount(unviewed);
     } catch (error) {
       console.error('Error fetching quotes:', error);
@@ -106,6 +116,55 @@ export default function AdminDashboard() {
       fetchQuotes();
     } catch (error) {
       console.error('Error updating quote:', error);
+    }
+  };
+
+  const handleArchiveQuote = async (quoteId: string) => {
+    if (!confirm('Are you sure you want to archive this quote request?')) return;
+
+    try {
+      await supabase
+        .from('quotes')
+        .update({
+          archived: true,
+          archived_at: new Date().toISOString(),
+        })
+        .eq('id', quoteId);
+
+      fetchQuotes();
+    } catch (error) {
+      console.error('Error archiving quote:', error);
+    }
+  };
+
+  const handleUnarchiveQuote = async (quoteId: string) => {
+    try {
+      await supabase
+        .from('quotes')
+        .update({
+          archived: false,
+          archived_at: null,
+        })
+        .eq('id', quoteId);
+
+      fetchQuotes();
+    } catch (error) {
+      console.error('Error unarchiving quote:', error);
+    }
+  };
+
+  const handleDeleteQuote = async (quoteId: string) => {
+    if (!confirm('Are you sure you want to permanently delete this quote request? This action cannot be undone.')) return;
+
+    try {
+      await supabase
+        .from('quotes')
+        .delete()
+        .eq('id', quoteId);
+
+      fetchQuotes();
+    } catch (error) {
+      console.error('Error deleting quote:', error);
     }
   };
 
@@ -179,7 +238,7 @@ export default function AdminDashboard() {
           <p className="text-gray-600">Manage and respond to customer quote requests</p>
         </div>
 
-        {unviewedCount > 0 && (
+        {unviewedCount > 0 && !viewArchived && (
           <div className="mb-6 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 p-4 rounded-lg shadow">
             <div className="flex items-center">
               <div className="flex-shrink-0">
@@ -194,14 +253,39 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        <div className="mb-6 flex space-x-2">
+          <button
+            onClick={() => setViewArchived(false)}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              !viewArchived
+                ? 'bg-pink-600 text-white'
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            Active Quotes
+          </button>
+          <button
+            onClick={() => setViewArchived(true)}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              viewArchived
+                ? 'bg-pink-600 text-white'
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            Archived Quotes
+          </button>
+        </div>
+
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
           </div>
         ) : quotes.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <div className="text-6xl mb-4">📋</div>
-            <p className="text-gray-600">No quote requests yet</p>
+            <div className="text-6xl mb-4">{viewArchived ? '📦' : '📋'}</div>
+            <p className="text-gray-600">
+              {viewArchived ? 'No archived quote requests' : 'No active quote requests yet'}
+            </p>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -269,12 +353,46 @@ export default function AdminDashboard() {
                       {new Date(quote.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleViewQuote(quote)}
-                        className="text-pink-600 hover:text-pink-900"
-                      >
-                        View Details
-                      </button>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleViewQuote(quote)}
+                          className="text-pink-600 hover:text-pink-900"
+                        >
+                          View
+                        </button>
+                        {!viewArchived ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleArchiveQuote(quote.id);
+                            }}
+                            className="text-gray-600 hover:text-gray-900"
+                          >
+                            Archive
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUnarchiveQuote(quote.id);
+                              }}
+                              className="text-green-600 hover:text-green-900"
+                            >
+                              Restore
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteQuote(quote.id);
+                              }}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
