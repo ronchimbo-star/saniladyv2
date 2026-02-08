@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [quoteStatus, setQuoteStatus] = useState('');
+  const [unviewedCount, setUnviewedCount] = useState(0);
 
   useEffect(() => {
     if (!user) {
@@ -56,6 +57,9 @@ export default function AdminDashboard() {
 
       if (error) throw error;
       setQuotes(data || []);
+
+      const unviewed = (data || []).filter(q => !q.viewed_by_admin).length;
+      setUnviewedCount(unviewed);
     } catch (error) {
       console.error('Error fetching quotes:', error);
     } finally {
@@ -126,9 +130,16 @@ export default function AdminDashboard() {
               <span>📊</span>
               <span>Dashboard</span>
             </a>
-            <a href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-              <span>📋</span>
-              <span>Quote Requests</span>
+            <a href="#" className="flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <span>📋</span>
+                <span>Quote Requests</span>
+              </div>
+              {unviewedCount > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                  {unviewedCount}
+                </span>
+              )}
             </a>
             <Link to="/admin/customers" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>👥</span>
@@ -167,6 +178,21 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Quote Requests</h1>
           <p className="text-gray-600">Manage and respond to customer quote requests</p>
         </div>
+
+        {unviewedCount > 0 && (
+          <div className="mb-6 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 p-4 rounded-lg shadow">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <span className="text-2xl">🔔</span>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-red-800">
+                  You have {unviewedCount} new quote request{unviewedCount !== 1 ? 's' : ''} waiting for review
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center py-12">

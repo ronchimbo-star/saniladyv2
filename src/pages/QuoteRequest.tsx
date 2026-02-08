@@ -89,7 +89,7 @@ export default function QuoteRequest() {
       const { error: submitError } = await supabase
         .from('quotes')
         .insert({
-          user_id: user!.id,
+          user_id: user?.id || null,
           customer_name: customerName,
           customer_email: customerEmail,
           customer_phone: customerPhone,
@@ -106,6 +106,7 @@ export default function QuoteRequest() {
           special_requirements: specialRequirements,
           estimated_cost: estimatedCost,
           status: 'pending',
+          viewed_by_admin: false,
         });
 
       if (submitError) throw submitError;
