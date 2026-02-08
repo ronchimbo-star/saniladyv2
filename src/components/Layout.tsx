@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import CookieConsent from './CookieConsent';
@@ -10,6 +11,7 @@ interface SiteSettings {
   contact_phone: string;
   contact_email: string;
   contact_address: string;
+  google_analytics_id: string;
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -21,7 +23,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     footer_logo_url: '/sanilady-logo-footer.png',
     contact_phone: '0800 123 4567',
     contact_email: 'info@sanilady.co.uk',
-    contact_address: 'Serving Kent, London & Essex'
+    contact_address: 'Serving Kent, London & Essex',
+    google_analytics_id: ''
   });
 
   useEffect(() => {
@@ -32,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     try {
       const { data } = await supabase
         .from('site_settings')
-        .select('header_logo_url, footer_logo_url, contact_phone, contact_email, contact_address')
+        .select('header_logo_url, footer_logo_url, contact_phone, contact_email, contact_address, google_analytics_id')
         .maybeSingle();
 
       if (data) {
@@ -50,6 +53,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {settings.google_analytics_id && (
+        <Helmet>
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${settings.google_analytics_id}`}
+          />
+          <script>
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${settings.google_analytics_id}');
+            `}
+          </script>
+        </Helmet>
+      )}
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-24">
