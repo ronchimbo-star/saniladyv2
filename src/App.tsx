@@ -17,6 +17,7 @@ const CustomerInvoices = lazy(() => import('./pages/CustomerInvoices'));
 const CustomerDocuments = lazy(() => import('./pages/CustomerDocuments'));
 const QuoteRequest = lazy(() => import('./pages/QuoteRequest'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AdminContactSubmissions = lazy(() => import('./pages/AdminContactSubmissions'));
 const AdminSettings = lazy(() => import('./pages/AdminSettings'));
 const AdminTestimonials = lazy(() => import('./pages/AdminTestimonials'));
 const AdminNews = lazy(() => import('./pages/AdminNews'));
@@ -132,6 +133,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/contact-submissions"
+              element={
+                <ProtectedRoute>
+                  <AdminContactSubmissions />
                 </ProtectedRoute>
               }
             />

@@ -3,39 +3,34 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
 
-interface Quote {
+interface ContactSubmission {
   id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  company_name: string;
-  property_type: string;
-  property_size: string;
-  cleaning_frequency: string;
-  bedrooms: number;
-  bathrooms: number;
-  additional_services: string[];
-  special_requirements: string;
-  estimated_cost: number;
+  type: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  company: string | null;
+  subject: string | null;
+  message: string;
+  service_type: string | null;
   status: string;
   viewed_by_admin: boolean;
-  admin_notes: string;
   archived: boolean;
   archived_at: string | null;
+  admin_notes: string | null;
   created_at: string;
   updated_at: string;
 }
 
-export default function AdminDashboard() {
+export default function AdminContactSubmissions() {
   const { user, isAdmin: userIsAdmin } = useAuth();
   const navigate = useNavigate();
-  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
+  const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
-  const [quoteStatus, setQuoteStatus] = useState('');
+  const [submissionStatus, setSubmissionStatus] = useState('');
   const [unviewedCount, setUnviewedCount] = useState(0);
-  const [unviewedContactCount, setUnviewedContactCount] = useState(0);
   const [viewArchived, setViewArchived] = useState(false);
 
   useEffect(() => {
@@ -49,140 +44,123 @@ export default function AdminDashboard() {
       return;
     }
 
-    fetchQuotes();
-    fetchContactSubmissionsCount();
+    fetchSubmissions();
   }, [user, userIsAdmin, navigate]);
 
   useEffect(() => {
     if (user && userIsAdmin) {
-      fetchQuotes();
+      fetchSubmissions();
     }
   }, [viewArchived]);
 
-  const fetchQuotes = async () => {
+  const fetchSubmissions = async () => {
     try {
       const { data, error } = await supabase
-        .from('quotes')
+        .from('contact_submissions')
         .select('*')
         .eq('archived', viewArchived)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setQuotes(data || []);
+      setSubmissions(data || []);
 
-      const unviewed = (data || []).filter(q => !q.viewed_by_admin && !q.archived).length;
+      const unviewed = (data || []).filter(s => !s.viewed_by_admin && !s.archived).length;
       setUnviewedCount(unviewed);
     } catch (error) {
-      console.error('Error fetching quotes:', error);
+      console.error('Error fetching contact submissions:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchContactSubmissionsCount = async () => {
+  const markAsViewed = async (submissionId: string) => {
     try {
-      const { data, error } = await supabase
+      await supabase
         .from('contact_submissions')
-        .select('id, viewed_by_admin, archived')
-        .eq('archived', false);
-
-      if (error) throw error;
-
-      const unviewed = (data || []).filter(s => !s.viewed_by_admin).length;
-      setUnviewedContactCount(unviewed);
-    } catch (error) {
-      console.error('Error fetching contact submissions count:', error);
-    }
-  };
-
-  const markAsViewed = async (quoteId: string) => {
-    try {
-      await supabase
-        .from('quotes')
         .update({ viewed_by_admin: true })
-        .eq('id', quoteId);
+        .eq('id', submissionId);
 
-      fetchQuotes();
+      fetchSubmissions();
     } catch (error) {
-      console.error('Error marking quote as viewed:', error);
+      console.error('Error marking submission as viewed:', error);
     }
   };
 
-  const handleViewQuote = (quote: Quote) => {
-    setSelectedQuote(quote);
-    setAdminNotes(quote.admin_notes || '');
-    setQuoteStatus(quote.status);
-    if (!quote.viewed_by_admin) {
-      markAsViewed(quote.id);
+  const handleViewSubmission = (submission: ContactSubmission) => {
+    setSelectedSubmission(submission);
+    setAdminNotes(submission.admin_notes || '');
+    setSubmissionStatus(submission.status || 'pending');
+    if (!submission.viewed_by_admin) {
+      markAsViewed(submission.id);
     }
   };
 
-  const handleUpdateQuote = async () => {
-    if (!selectedQuote) return;
+  const handleUpdateSubmission = async () => {
+    if (!selectedSubmission) return;
 
     try {
       await supabase
-        .from('quotes')
+        .from('contact_submissions')
         .update({
           admin_notes: adminNotes,
-          status: quoteStatus,
+          status: submissionStatus,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', selectedQuote.id);
+        .eq('id', selectedSubmission.id);
 
-      setSelectedQuote(null);
-      fetchQuotes();
+      setSelectedSubmission(null);
+      fetchSubmissions();
     } catch (error) {
-      console.error('Error updating quote:', error);
+      console.error('Error updating submission:', error);
     }
   };
 
-  const handleArchiveQuote = async (quoteId: string) => {
-    if (!confirm('Are you sure you want to archive this quote request?')) return;
+  const handleArchiveSubmission = async (submissionId: string) => {
+    if (!confirm('Are you sure you want to archive this contact submission?')) return;
 
     try {
       await supabase
-        .from('quotes')
+        .from('contact_submissions')
         .update({
           archived: true,
           archived_at: new Date().toISOString(),
         })
-        .eq('id', quoteId);
+        .eq('id', submissionId);
 
-      fetchQuotes();
+      fetchSubmissions();
     } catch (error) {
-      console.error('Error archiving quote:', error);
+      console.error('Error archiving submission:', error);
     }
   };
 
-  const handleUnarchiveQuote = async (quoteId: string) => {
+  const handleUnarchiveSubmission = async (submissionId: string) => {
     try {
       await supabase
-        .from('quotes')
+        .from('contact_submissions')
         .update({
           archived: false,
           archived_at: null,
         })
-        .eq('id', quoteId);
+        .eq('id', submissionId);
 
-      fetchQuotes();
+      fetchSubmissions();
     } catch (error) {
-      console.error('Error unarchiving quote:', error);
+      console.error('Error unarchiving submission:', error);
     }
   };
 
-  const handleDeleteQuote = async (quoteId: string) => {
-    if (!confirm('Are you sure you want to permanently delete this quote request? This action cannot be undone.')) return;
+  const handleDeleteSubmission = async (submissionId: string) => {
+    if (!confirm('Are you sure you want to permanently delete this contact submission? This action cannot be undone.')) return;
 
     try {
       await supabase
-        .from('quotes')
+        .from('contact_submissions')
         .delete()
-        .eq('id', quoteId);
+        .eq('id', submissionId);
 
-      fetchQuotes();
+      fetchSubmissions();
     } catch (error) {
-      console.error('Error deleting quote:', error);
+      console.error('Error deleting submission:', error);
     }
   };
 
@@ -203,14 +181,18 @@ export default function AdminDashboard() {
             <span className="text-xl font-bold text-gray-800">SaniLady</span>
           </div>
           <nav className="space-y-2">
-            <a href="#" className="flex items-center space-x-3 px-4 py-3 bg-pink-50 text-pink-600 rounded-lg font-medium">
+            <Link to="/admin/dashboard" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>📊</span>
               <span>Dashboard</span>
-            </a>
-            <a href="#" className="flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+            </Link>
+            <Link to="/admin/dashboard" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <span>📋</span>
+              <span>Quote Requests</span>
+            </Link>
+            <a href="#" className="flex items-center justify-between px-4 py-3 bg-pink-50 text-pink-600 rounded-lg font-medium">
               <div className="flex items-center space-x-3">
-                <span>📋</span>
-                <span>Quote Requests</span>
+                <span>💬</span>
+                <span>Contact Messages</span>
               </div>
               {unviewedCount > 0 && (
                 <span className="bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
@@ -218,17 +200,6 @@ export default function AdminDashboard() {
                 </span>
               )}
             </a>
-            <Link to="/admin/contact-submissions" className="flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <span>💬</span>
-                <span>Contact Messages</span>
-              </div>
-              {unviewedContactCount > 0 && (
-                <span className="bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                  {unviewedContactCount}
-                </span>
-              )}
-            </Link>
             <Link to="/admin/customers" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>👥</span>
               <span>Customers</span>
@@ -250,7 +221,7 @@ export default function AdminDashboard() {
               <span>News Articles</span>
             </Link>
             <Link to="/admin/testimonials" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-              <span>💬</span>
+              <span>💭</span>
               <span>Testimonials</span>
             </Link>
             <Link to="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
@@ -263,8 +234,8 @@ export default function AdminDashboard() {
 
       <main className="flex-1 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Quote Requests</h1>
-          <p className="text-gray-600">Manage and respond to customer quote requests</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Contact Messages</h1>
+          <p className="text-gray-600">Manage and respond to customer contact submissions</p>
         </div>
 
         {unviewedCount > 0 && !viewArchived && (
@@ -275,7 +246,7 @@ export default function AdminDashboard() {
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-red-800">
-                  You have {unviewedCount} new quote request{unviewedCount !== 1 ? 's' : ''} waiting for review
+                  You have {unviewedCount} new contact message{unviewedCount !== 1 ? 's' : ''} waiting for review
                 </p>
               </div>
             </div>
@@ -291,7 +262,7 @@ export default function AdminDashboard() {
                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
             }`}
           >
-            Active Quotes
+            Active Messages
           </button>
           <button
             onClick={() => setViewArchived(true)}
@@ -301,7 +272,7 @@ export default function AdminDashboard() {
                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
             }`}
           >
-            Archived Quotes
+            Archived Messages
           </button>
         </div>
 
@@ -309,11 +280,11 @@ export default function AdminDashboard() {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
           </div>
-        ) : quotes.length === 0 ? (
+        ) : submissions.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <div className="text-6xl mb-4">{viewArchived ? '📦' : '📋'}</div>
+            <div className="text-6xl mb-4">{viewArchived ? '📦' : '💬'}</div>
             <p className="text-gray-600">
-              {viewArchived ? 'No archived quote requests' : 'No active quote requests yet'}
+              {viewArchived ? 'No archived contact messages' : 'No contact messages yet'}
             </p>
           </div>
         ) : (
@@ -325,13 +296,13 @@ export default function AdminDashboard() {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Customer
+                    Contact
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Service
+                    Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Cost
+                    Subject
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
@@ -342,21 +313,21 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {quotes.map((quote) => (
-                  <tr key={quote.id} className={!quote.viewed_by_admin ? 'bg-pink-50' : ''}>
+                {submissions.map((submission) => (
+                  <tr key={submission.id} className={!submission.viewed_by_admin ? 'bg-pink-50' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          quote.status === 'pending'
+                          submission.status === 'pending'
                             ? 'bg-yellow-100 text-yellow-800'
-                            : quote.status === 'approved'
+                            : submission.status === 'responded'
                             ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
                         }`}
                       >
-                        {quote.status}
+                        {submission.status || 'pending'}
                       </span>
-                      {!quote.viewed_by_admin && (
+                      {!submission.viewed_by_admin && (
                         <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
                           New
                         </span>
@@ -364,27 +335,27 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-gray-900">
-                        {quote.customer_name || 'Not provided'}
+                        {submission.name}
                       </div>
-                      <div className="text-sm text-gray-500">{quote.customer_email}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 capitalize">
-                        {quote.property_type.replace(/-/g, ' ')}
-                      </div>
+                      <div className="text-sm text-gray-500">{submission.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-pink-600">
-                        £{Number(quote.estimated_cost).toFixed(2)}
+                      <div className="text-sm text-gray-900 capitalize">
+                        {submission.type}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {submission.subject || 'No subject'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(quote.created_at).toLocaleDateString()}
+                      {new Date(submission.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => handleViewQuote(quote)}
+                          onClick={() => handleViewSubmission(submission)}
                           className="text-pink-600 hover:text-pink-900"
                         >
                           View
@@ -393,7 +364,7 @@ export default function AdminDashboard() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleArchiveQuote(quote.id);
+                              handleArchiveSubmission(submission.id);
                             }}
                             className="text-gray-600 hover:text-gray-900"
                           >
@@ -404,7 +375,7 @@ export default function AdminDashboard() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleUnarchiveQuote(quote.id);
+                                handleUnarchiveSubmission(submission.id);
                               }}
                               className="text-green-600 hover:text-green-900"
                             >
@@ -413,7 +384,7 @@ export default function AdminDashboard() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDeleteQuote(quote.id);
+                                handleDeleteSubmission(submission.id);
                               }}
                               className="text-red-600 hover:text-red-900"
                             >
@@ -430,14 +401,14 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {selectedQuote && (
+        {selectedSubmission && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Quote Details</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">Contact Message Details</h2>
                   <button
-                    onClick={() => setSelectedQuote(null)}
+                    onClick={() => setSelectedSubmission(null)}
                     className="text-gray-400 hover:text-gray-600 text-2xl"
                   >
                     ×
@@ -446,72 +417,57 @@ export default function AdminDashboard() {
 
                 <div className="space-y-6">
                   <div className="border-b pb-4">
-                    <h3 className="font-semibold text-lg mb-3 text-pink-600">Customer Information</h3>
+                    <h3 className="font-semibold text-lg mb-3 text-pink-600">Contact Information</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-sm text-gray-600">Name</p>
-                        <p className="font-medium">{selectedQuote.customer_name || 'Not provided'}</p>
+                        <p className="font-medium">{selectedSubmission.name}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Email</p>
-                        <p className="font-medium">{selectedQuote.customer_email || 'Not provided'}</p>
+                        <p className="font-medium">{selectedSubmission.email}</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Phone</p>
-                        <p className="font-medium">{selectedQuote.customer_phone || 'Not provided'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Company</p>
-                        <p className="font-medium">{selectedQuote.company_name || 'Not provided'}</p>
-                      </div>
+                      {selectedSubmission.phone && (
+                        <div>
+                          <p className="text-sm text-gray-600">Phone</p>
+                          <p className="font-medium">{selectedSubmission.phone}</p>
+                        </div>
+                      )}
+                      {selectedSubmission.company && (
+                        <div>
+                          <p className="text-sm text-gray-600">Company</p>
+                          <p className="font-medium">{selectedSubmission.company}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   <div className="border-b pb-4">
-                    <h3 className="font-semibold text-lg mb-3 text-pink-600">Service Details</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <h3 className="font-semibold text-lg mb-3 text-pink-600">Message Details</h3>
+                    <div className="space-y-4">
                       <div>
-                        <p className="text-sm text-gray-600">Service Type</p>
-                        <p className="font-medium capitalize">{selectedQuote.property_type.replace(/-/g, ' ')}</p>
+                        <p className="text-sm text-gray-600">Type</p>
+                        <p className="font-medium capitalize">{selectedSubmission.type}</p>
                       </div>
-                      {selectedQuote.property_size !== 'N/A' && (
+                      {selectedSubmission.subject && (
                         <div>
-                          <p className="text-sm text-gray-600">Facility Size</p>
-                          <p className="font-medium capitalize">{selectedQuote.property_size}</p>
+                          <p className="text-sm text-gray-600">Subject</p>
+                          <p className="font-medium">{selectedSubmission.subject}</p>
                         </div>
                       )}
-                      {selectedQuote.bedrooms > 0 && (
+                      {selectedSubmission.service_type && (
                         <div>
-                          <p className="text-sm text-gray-600">Employees</p>
-                          <p className="font-medium">{selectedQuote.bedrooms}</p>
+                          <p className="text-sm text-gray-600">Service Type</p>
+                          <p className="font-medium capitalize">{selectedSubmission.service_type}</p>
                         </div>
                       )}
-                      {selectedQuote.bathrooms > 0 && (
-                        <div>
-                          <p className="text-sm text-gray-600">Bins</p>
-                          <p className="font-medium">{selectedQuote.bathrooms}</p>
-                        </div>
-                      )}
+                      <div>
+                        <p className="text-sm text-gray-600">Message</p>
+                        <p className="font-medium whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                          {selectedSubmission.message}
+                        </p>
+                      </div>
                     </div>
-                    {selectedQuote.additional_services && selectedQuote.additional_services.length > 0 && (
-                      <div className="mt-4">
-                        <p className="text-sm text-gray-600">Additional Services</p>
-                        <p className="font-medium">{selectedQuote.additional_services.join(', ')}</p>
-                      </div>
-                    )}
-                    {selectedQuote.special_requirements && (
-                      <div className="mt-4">
-                        <p className="text-sm text-gray-600">Special Requirements</p>
-                        <p className="font-medium">{selectedQuote.special_requirements}</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-pink-50 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600">Estimated Monthly Cost</p>
-                    <p className="text-3xl font-bold text-pink-600">
-                      £{Number(selectedQuote.estimated_cost).toFixed(2)}
-                    </p>
                   </div>
 
                   <div>
@@ -519,14 +475,13 @@ export default function AdminDashboard() {
                       Status
                     </label>
                     <select
-                      value={quoteStatus}
-                      onChange={(e) => setQuoteStatus(e.target.value)}
+                      value={submissionStatus}
+                      onChange={(e) => setSubmissionStatus(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
                     >
                       <option value="pending">Pending</option>
-                      <option value="approved">Approved</option>
-                      <option value="rejected">Rejected</option>
-                      <option value="contacted">Contacted</option>
+                      <option value="responded">Responded</option>
+                      <option value="resolved">Resolved</option>
                     </select>
                   </div>
 
@@ -539,19 +494,19 @@ export default function AdminDashboard() {
                       onChange={(e) => setAdminNotes(e.target.value)}
                       rows={4}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
-                      placeholder="Add notes about this quote..."
+                      placeholder="Add notes about this contact submission..."
                     />
                   </div>
 
                   <div className="flex space-x-4">
                     <button
-                      onClick={handleUpdateQuote}
+                      onClick={handleUpdateSubmission}
                       className="flex-1 bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white py-3 rounded-lg font-semibold hover:shadow-lg"
                     >
-                      Update Quote
+                      Update Message
                     </button>
                     <button
-                      onClick={() => setSelectedQuote(null)}
+                      onClick={() => setSelectedSubmission(null)}
                       className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                     >
                       Cancel
