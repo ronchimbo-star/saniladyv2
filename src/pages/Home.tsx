@@ -99,7 +99,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
               <div className="absolute inset-0 bg-white opacity-5 rounded-full blur-2xl transform scale-90 animate-pulse" style={{animationDelay: '1s'}}></div>
               <img
-                src="/sanilady-hero.png"
+                src="/sanilady-sanitary-waste.png"
                 alt="SaniLady Period Dignity"
                 className="relative w-full max-w-2xl drop-shadow-2xl transform hover:scale-110 transition-transform duration-700 animate-float"
               />
