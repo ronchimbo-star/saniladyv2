@@ -33,11 +33,14 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { quote }: { quote: QuoteData } = await req.json();
+    console.log("Received quote notification request:", quote);
 
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not configured");
       throw new Error("RESEND_API_KEY not configured");
     }
+    console.log("RESEND_API_KEY found, length:", resendApiKey.length);
 
     const serviceTypeDisplay = quote.service_type
       .replace(/-/g, " ")
@@ -146,26 +149,37 @@ Deno.serve(async (req: Request) => {
       </html>
     `;
 
+    const emailPayload = {
+      from: "SaniLady <onboarding@resend.dev>",
+      to: ["ronchimbo@gmail.com"],
+      subject: `New Quote Request from ${quote.customer_name || quote.customer_email || "Customer"}`,
+      html: emailHtml,
+    };
+
+    console.log("Sending email to Resend API with payload:", {
+      from: emailPayload.from,
+      to: emailPayload.to,
+      subject: emailPayload.subject,
+    });
+
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${resendApiKey}`,
       },
-      body: JSON.stringify({
-        from: "SaniLady <onboarding@resend.dev>",
-        to: ["ronchimbo@gmail.com"],
-        subject: `New Quote Request from ${quote.customer_name || quote.customer_email || "Customer"}`,
-        html: emailHtml,
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     const emailData = await emailResponse.json();
+    console.log("Resend API response:", emailResponse.status, emailData);
 
     if (!emailResponse.ok) {
       console.error("Resend error:", emailData);
       throw new Error(`Failed to send email: ${JSON.stringify(emailData)}`);
     }
+
+    console.log("Email sent successfully:", emailData.id);
 
     return new Response(
       JSON.stringify({ success: true, emailId: emailData.id }),
