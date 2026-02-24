@@ -361,15 +361,37 @@ export default function AdminContactSubmissions() {
                           View
                         </button>
                         {!viewArchived ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleArchiveSubmission(submission.id);
-                            }}
-                            className="text-gray-600 hover:text-gray-900"
-                          >
-                            Archive
-                          </button>
+                          <>
+                            {!submission.viewed_by_admin && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markAsViewed(submission.id);
+                                }}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                Mark Read
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleArchiveSubmission(submission.id);
+                              }}
+                              className="text-gray-600 hover:text-gray-900"
+                            >
+                              Archive
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSubmission(submission.id);
+                              }}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </>
                         ) : (
                           <>
                             <button

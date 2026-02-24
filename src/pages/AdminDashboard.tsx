@@ -390,15 +390,37 @@ export default function AdminDashboard() {
                           View
                         </button>
                         {!viewArchived ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleArchiveQuote(quote.id);
-                            }}
-                            className="text-gray-600 hover:text-gray-900"
-                          >
-                            Archive
-                          </button>
+                          <>
+                            {!quote.viewed_by_admin && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markAsViewed(quote.id);
+                                }}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                Mark Read
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleArchiveQuote(quote.id);
+                              }}
+                              className="text-gray-600 hover:text-gray-900"
+                            >
+                              Archive
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteQuote(quote.id);
+                              }}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </>
                         ) : (
                           <>
                             <button
