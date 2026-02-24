@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 interface ContactSubmission {
   id: string;
@@ -32,6 +33,19 @@ export default function AdminContactSubmissions() {
   const [submissionStatus, setSubmissionStatus] = useState('');
   const [unviewedCount, setUnviewedCount] = useState(0);
   const [viewArchived, setViewArchived] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type: 'danger' | 'warning' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    type: 'warning',
+  });
 
   useEffect(() => {
     if (!user) {
@@ -116,21 +130,28 @@ export default function AdminContactSubmissions() {
   };
 
   const handleArchiveSubmission = async (submissionId: string) => {
-    if (!confirm('Are you sure you want to archive this contact submission?')) return;
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Archive Contact Submission',
+      message: 'Are you sure you want to archive this contact submission? You can restore it later from the archived messages.',
+      type: 'warning',
+      onConfirm: async () => {
+        try {
+          await supabase
+            .from('contact_submissions')
+            .update({
+              archived: true,
+              archived_at: new Date().toISOString(),
+            })
+            .eq('id', submissionId);
 
-    try {
-      await supabase
-        .from('contact_submissions')
-        .update({
-          archived: true,
-          archived_at: new Date().toISOString(),
-        })
-        .eq('id', submissionId);
-
-      fetchSubmissions();
-    } catch (error) {
-      console.error('Error archiving submission:', error);
-    }
+          fetchSubmissions();
+          setConfirmDialog({ ...confirmDialog, isOpen: false });
+        } catch (error) {
+          console.error('Error archiving submission:', error);
+        }
+      },
+    });
   };
 
   const handleUnarchiveSubmission = async (submissionId: string) => {
@@ -150,18 +171,25 @@ export default function AdminContactSubmissions() {
   };
 
   const handleDeleteSubmission = async (submissionId: string) => {
-    if (!confirm('Are you sure you want to permanently delete this contact submission? This action cannot be undone.')) return;
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Contact Submission',
+      message: 'Are you sure you want to permanently delete this contact submission? This action cannot be undone and all data will be lost forever.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await supabase
+            .from('contact_submissions')
+            .delete()
+            .eq('id', submissionId);
 
-    try {
-      await supabase
-        .from('contact_submissions')
-        .delete()
-        .eq('id', submissionId);
-
-      fetchSubmissions();
-    } catch (error) {
-      console.error('Error deleting submission:', error);
-    }
+          fetchSubmissions();
+          setConfirmDialog({ ...confirmDialog, isOpen: false });
+        } catch (error) {
+          console.error('Error deleting submission:', error);
+        }
+      },
+    });
   };
 
   if (!userIsAdmin) {
@@ -539,6 +567,16 @@ export default function AdminContactSubmissions() {
             </div>
           </div>
         )}
+
+        <ConfirmDialog
+          isOpen={confirmDialog.isOpen}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          type={confirmDialog.type}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+          confirmLabel={confirmDialog.type === 'danger' ? 'Delete' : 'Confirm'}
+        />
       </main>
     </div>
   );

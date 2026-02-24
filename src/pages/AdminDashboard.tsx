@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 interface Quote {
   id: string;
@@ -37,6 +38,19 @@ export default function AdminDashboard() {
   const [unviewedCount, setUnviewedCount] = useState(0);
   const [unviewedContactCount, setUnviewedContactCount] = useState(0);
   const [viewArchived, setViewArchived] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type: 'danger' | 'warning' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    type: 'warning',
+  });
 
   useEffect(() => {
     if (!user) {
@@ -138,21 +152,28 @@ export default function AdminDashboard() {
   };
 
   const handleArchiveQuote = async (quoteId: string) => {
-    if (!confirm('Are you sure you want to archive this quote request?')) return;
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Archive Quote Request',
+      message: 'Are you sure you want to archive this quote request? You can restore it later from the archived quotes.',
+      type: 'warning',
+      onConfirm: async () => {
+        try {
+          await supabase
+            .from('quotes')
+            .update({
+              archived: true,
+              archived_at: new Date().toISOString(),
+            })
+            .eq('id', quoteId);
 
-    try {
-      await supabase
-        .from('quotes')
-        .update({
-          archived: true,
-          archived_at: new Date().toISOString(),
-        })
-        .eq('id', quoteId);
-
-      fetchQuotes();
-    } catch (error) {
-      console.error('Error archiving quote:', error);
-    }
+          fetchQuotes();
+          setConfirmDialog({ ...confirmDialog, isOpen: false });
+        } catch (error) {
+          console.error('Error archiving quote:', error);
+        }
+      },
+    });
   };
 
   const handleUnarchiveQuote = async (quoteId: string) => {
@@ -172,18 +193,25 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteQuote = async (quoteId: string) => {
-    if (!confirm('Are you sure you want to permanently delete this quote request? This action cannot be undone.')) return;
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Quote Request',
+      message: 'Are you sure you want to permanently delete this quote request? This action cannot be undone and all data will be lost forever.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await supabase
+            .from('quotes')
+            .delete()
+            .eq('id', quoteId);
 
-    try {
-      await supabase
-        .from('quotes')
-        .delete()
-        .eq('id', quoteId);
-
-      fetchQuotes();
-    } catch (error) {
-      console.error('Error deleting quote:', error);
-    }
+          fetchQuotes();
+          setConfirmDialog({ ...confirmDialog, isOpen: false });
+        } catch (error) {
+          console.error('Error deleting quote:', error);
+        }
+      },
+    });
   };
 
   if (!userIsAdmin) {
@@ -584,6 +612,16 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+        <ConfirmDialog
+          isOpen={confirmDialog.isOpen}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          type={confirmDialog.type}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+          confirmLabel={confirmDialog.type === 'danger' ? 'Delete' : 'Confirm'}
+        />
       </main>
     </div>
   );

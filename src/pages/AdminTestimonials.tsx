@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 interface Testimonial {
   id: string;
@@ -25,6 +26,19 @@ export default function AdminTestimonials() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type: 'danger' | 'warning' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    type: 'warning',
+  });
 
   const [formData, setFormData] = useState({
     service_type: 'period-dignity',
@@ -123,22 +137,29 @@ export default function AdminTestimonials() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this testimonial?')) return;
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Testimonial',
+      message: 'Are you sure you want to permanently delete this testimonial? This action cannot be undone.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const { error } = await supabase
+            .from('testimonials')
+            .delete()
+            .eq('id', id);
 
-    try {
-      const { error } = await supabase
-        .from('testimonials')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      setSuccess('Testimonial deleted successfully!');
-      fetchTestimonials();
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      console.error('Error deleting testimonial:', err);
-      setError('Failed to delete testimonial');
-    }
+          if (error) throw error;
+          setSuccess('Testimonial deleted successfully!');
+          fetchTestimonials();
+          setTimeout(() => setSuccess(''), 3000);
+          setConfirmDialog({ ...confirmDialog, isOpen: false });
+        } catch (err) {
+          console.error('Error deleting testimonial:', err);
+          setError('Failed to delete testimonial');
+        }
+      },
+    });
   };
 
   const resetForm = () => {
@@ -468,6 +489,16 @@ export default function AdminTestimonials() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        type={confirmDialog.type}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+        confirmLabel={confirmDialog.type === 'danger' ? 'Delete' : 'Confirm'}
+      />
     </div>
   );
 }
