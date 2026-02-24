@@ -147,7 +147,7 @@ export default function Contact() {
 
     try {
       if (formType === 'quote') {
-        const { error: quoteError } = await supabase
+        const { data: quoteData, error: quoteError } = await supabase
           .from('quotes')
           .insert({
             user_id: null,
@@ -167,16 +167,18 @@ export default function Contact() {
             special_requirements: specialRequirements || message,
             estimated_cost: estimatedCost,
             status: 'pending',
-          });
+          })
+          .select()
+          .single();
 
         if (quoteError) throw quoteError;
 
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        if (supabaseUrl && supabaseAnonKey) {
+        if (quoteData && supabaseUrl && supabaseAnonKey) {
           try {
-            await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
+            const response = await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -184,6 +186,7 @@ export default function Contact() {
               },
               body: JSON.stringify({
                 quote: {
+                  id: quoteData.id,
                   customer_name: name,
                   customer_email: email,
                   customer_phone: phone,
@@ -200,12 +203,17 @@ export default function Contact() {
                 }
               }),
             });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error('Email notification failed:', errorData);
+            }
           } catch (emailError) {
             console.error('Email notification failed:', emailError);
           }
         }
       } else {
-        const { error: contactError } = await supabase
+        const { data: contactData, error: contactError } = await supabase
           .from('contact_submissions')
           .insert({
             type: formType,
@@ -217,16 +225,18 @@ export default function Contact() {
             message,
             service_type: '',
             status: 'pending',
-          });
+          })
+          .select()
+          .single();
 
         if (contactError) throw contactError;
 
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        if (supabaseUrl && supabaseAnonKey) {
+        if (contactData && supabaseUrl && supabaseAnonKey) {
           try {
-            await fetch(`${supabaseUrl}/functions/v1/send-contact-notification`, {
+            const response = await fetch(`${supabaseUrl}/functions/v1/send-contact-notification`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -234,6 +244,7 @@ export default function Contact() {
               },
               body: JSON.stringify({
                 contact: {
+                  id: contactData.id,
                   type: formType,
                   name,
                   email,
@@ -245,6 +256,11 @@ export default function Contact() {
                 }
               }),
             });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error('Email notification failed:', errorData);
+            }
           } catch (emailError) {
             console.error('Email notification failed:', emailError);
           }

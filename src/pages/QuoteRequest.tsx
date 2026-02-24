@@ -86,7 +86,7 @@ export default function QuoteRequest() {
     setLoading(true);
 
     try {
-      const { error: submitError } = await supabase
+      const { data: quoteData, error: submitError } = await supabase
         .from('quotes')
         .insert({
           user_id: user?.id || null,
@@ -107,40 +107,50 @@ export default function QuoteRequest() {
           estimated_cost: estimatedCost,
           status: 'pending',
           viewed_by_admin: false,
-        });
+        })
+        .select()
+        .single();
 
       if (submitError) throw submitError;
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-      try {
-        await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseAnonKey}`,
-          },
-          body: JSON.stringify({
-            quote: {
-              customer_name: customerName,
-              customer_email: customerEmail,
-              customer_phone: customerPhone,
-              company_name: companyName,
-              service_type: serviceType,
-              property_size: propertySize || 'N/A',
-              employee_count: parseInt(employeeCount as string) || 0,
-              bin_count: parseInt(binCount as string) || 0,
-              bin_collection_frequency: binCollectionFrequency,
-              needs_bin_rental: needsBinRental,
-              estimated_cost: estimatedCost,
-              special_requirements: specialRequirements,
-              additional_services: additionalServices,
-            }
-          }),
-        });
-      } catch (emailError) {
-        console.error('Email notification failed:', emailError);
+      if (quoteData && supabaseUrl && supabaseAnonKey) {
+        try {
+          const response = await fetch(`${supabaseUrl}/functions/v1/send-quote-notification`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({
+              quote: {
+                id: quoteData.id,
+                customer_name: customerName,
+                customer_email: customerEmail,
+                customer_phone: customerPhone,
+                company_name: companyName,
+                service_type: serviceType,
+                property_size: propertySize || 'N/A',
+                employee_count: parseInt(employeeCount as string) || 0,
+                bin_count: parseInt(binCount as string) || 0,
+                bin_collection_frequency: binCollectionFrequency,
+                needs_bin_rental: needsBinRental,
+                estimated_cost: estimatedCost,
+                special_requirements: specialRequirements,
+                additional_services: additionalServices,
+              }
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Email notification failed:', errorData);
+          }
+        } catch (emailError) {
+          console.error('Email notification failed:', emailError);
+        }
       }
 
       setSuccess(true);

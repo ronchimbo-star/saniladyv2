@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 interface QuoteData {
-  id: string;
+  id?: string;
   customer_name: string;
   customer_email: string;
   customer_phone: string;
@@ -137,7 +137,7 @@ Deno.serve(async (req: Request) => {
               </p>
 
               <div class="footer">
-                <p>Quote ID: ${quote.id}</p>
+                ${quote.id ? `<p>Quote ID: ${quote.id}</p>` : ''}
                 <p>This is an automated notification from SaniLady</p>
               </div>
             </div>

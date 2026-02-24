@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 interface ContactData {
-  id: string;
+  id?: string;
   type: string;
   name: string;
   email: string;
