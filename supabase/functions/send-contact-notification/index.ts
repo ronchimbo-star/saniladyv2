@@ -112,7 +112,7 @@ Deno.serve(async (req: Request) => {
     `;
 
     const emailPayload = {
-      from: "ronchimbo@gmail.com",
+      from: "SaniLady <onboarding@resend.dev>",
       to: ["ronchimbo@gmail.com"],
       subject: isQuote
         ? `New Quote Request from ${contact.name || contact.email}`
