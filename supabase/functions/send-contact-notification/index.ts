@@ -28,11 +28,14 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { contact }: { contact: ContactData } = await req.json();
+    console.log("Received contact notification request:", contact);
 
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not configured");
       throw new Error("RESEND_API_KEY not configured");
     }
+    console.log("RESEND_API_KEY found, length:", resendApiKey.length);
 
     const isQuote = contact.type === 'quote';
     const title = isQuote ? 'New Quote Request' : 'New Contact Submission';
@@ -108,28 +111,39 @@ Deno.serve(async (req: Request) => {
       </html>
     `;
 
+    const emailPayload = {
+      from: "SaniLady <onboarding@resend.dev>",
+      to: ["ronchimbo@gmail.com"],
+      subject: isQuote
+        ? `New Quote Request from ${contact.name || contact.email}`
+        : `New Contact: ${contact.subject || 'General Enquiry'}`,
+      html: emailHtml,
+    };
+
+    console.log("Sending email to Resend API with payload:", {
+      from: emailPayload.from,
+      to: emailPayload.to,
+      subject: emailPayload.subject,
+    });
+
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${resendApiKey}`,
       },
-      body: JSON.stringify({
-        from: "SaniLady <onboarding@resend.dev>",
-        to: ["ronchimbo@gmail.com"],
-        subject: isQuote
-          ? `New Quote Request from ${contact.name || contact.email}`
-          : `New Contact: ${contact.subject || 'General Enquiry'}`,
-        html: emailHtml,
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     const emailData = await emailResponse.json();
+    console.log("Resend API response:", emailResponse.status, emailData);
 
     if (!emailResponse.ok) {
       console.error("Resend error:", emailData);
       throw new Error(`Failed to send email: ${JSON.stringify(emailData)}`);
     }
+
+    console.log("Email sent successfully:", emailData.id);
 
     return new Response(
       JSON.stringify({ success: true, emailId: emailData.id }),
