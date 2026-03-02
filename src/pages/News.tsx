@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface NewsArticle {
   id: string;
@@ -68,6 +69,12 @@ export default function News() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="News & Updates | SaniLady"
+        description="Latest news, updates and insights from SaniLady about feminine hygiene, period dignity and sanitary waste management."
+        canonical="/news"
+      />
+
       <div className="bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white py-20">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">

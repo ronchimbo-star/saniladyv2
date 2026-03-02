@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const londonAreas = [
   'Central London', 'Westminster', 'City of London', 'Camden', 'Islington',
@@ -10,11 +11,24 @@ const londonAreas = [
 ];
 
 export default function ServiceAreaLondon() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sanilady.co.uk' },
+      { '@type': 'ListItem', position: 2, name: 'Service Areas', item: 'https://sanilady.co.uk/service-coverage' },
+      { '@type': 'ListItem', position: 3, name: 'London', item: 'https://sanilady.co.uk/service-areas/london' }
+    ]
+  };
+
   return (
     <div className="min-h-screen">
-      <title>Feminine Hygiene Services London | Sanitary Bins Central London | SaniLady</title>
-      <meta name="description" content="Professional feminine hygiene and sanitary waste management services across Greater London. Serving Central London, Westminster, Camden, and all London boroughs. Period dignity solutions for London businesses." />
-      <meta name="keywords" content="sanitary bins London, feminine hygiene London, period dignity Central London, sanitary waste Westminster, sanitary bins Camden, feminine hygiene City of London, sanitary waste management London, period products London, workplace hygiene London" />
+      <SEO
+        title="Sanitary Waste Services in London | Period Dignity Programme | SaniLady"
+        description="Professional feminine hygiene services across London. Sanitary waste management and HMRC-compliant period dignity benefits for London businesses."
+        canonical="/service-areas/london"
+        schema={breadcrumbSchema}
+      />
 
       <div className="bg-gradient-to-br from-[#ec008c] to-purple-600 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">

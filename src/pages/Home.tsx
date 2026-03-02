@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface NewsArticle {
   id: string;
@@ -48,8 +49,49 @@ export default function Home() {
     });
   };
 
+  const schema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: 'SaniLady',
+      image: 'https://sanilady.co.uk/sanilady-hero.png',
+      description: 'Professional feminine hygiene and sanitary waste management services across Kent, London and Essex',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Kent',
+        addressRegion: 'England',
+        addressCountry: 'GB',
+      },
+      telephone: '+44-1322-879-713',
+      email: 'hello@sanilady.co.uk',
+      url: 'https://sanilady.co.uk',
+      areaServed: ['Kent', 'London', 'Essex', 'Hertfordshire', 'Surrey', 'Sussex'],
+      priceRange: '££',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'SaniLady',
+      url: 'https://sanilady.co.uk',
+      logo: 'https://sanilady.co.uk/sanilady-logo-header.png',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+44-1322-879-713',
+        email: 'hello@sanilady.co.uk',
+        contactType: 'Customer Service',
+        areaServed: 'GB',
+      },
+    },
+  ];
+
   return (
     <div className="min-h-screen">
+      <SEO
+        title="SaniLady | Feminine Hygiene & Sanitary Waste Services | Kent, London & Essex"
+        description="SaniLady provides sanitary waste management and period dignity employee benefits across Kent, London and Essex. Get your free quote today."
+        canonical="/"
+        schema={schema}
+      />
       <div className="relative bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -98,11 +140,14 @@ export default function Home() {
             <div className="relative flex justify-center items-center">
               <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
               <div className="absolute inset-0 bg-white opacity-5 rounded-full blur-2xl transform scale-90 animate-pulse" style={{animationDelay: '1s'}}></div>
-              <img
-                src="/sanilady-sanitary-waste.png"
-                alt="SaniLady Period Dignity"
-                className="relative w-full max-w-2xl drop-shadow-2xl transform hover:scale-110 transition-transform duration-700 animate-float"
-              />
+              <picture>
+                <source srcSet="/sanilady-sanitary-waste.webp" type="image/webp" />
+                <img
+                  src="/sanilady-sanitary-waste.png"
+                  alt="SaniLady Period Dignity"
+                  className="relative w-full max-w-2xl drop-shadow-2xl transform hover:scale-110 transition-transform duration-700 animate-float"
+                />
+              </picture>
             </div>
           </div>
         </div>

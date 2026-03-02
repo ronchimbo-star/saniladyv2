@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface Article {
   id: string;
@@ -174,8 +175,63 @@ export default function NewsArticle() {
     );
   }
 
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.meta_description || article.excerpt,
+    image: article.featured_image_url,
+    datePublished: article.published_at,
+    dateModified: article.published_at,
+    author: {
+      '@type': 'Organization',
+      name: 'SaniLady',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'SaniLady',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://sanilady.co.uk/sanilady-logo-header.png',
+      },
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://sanilady.co.uk',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'News',
+        item: 'https://sanilady.co.uk/news',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: article.title,
+        item: `https://sanilady.co.uk/news/${article.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={article.meta_title || `${article.title} | SaniLady News`}
+        description={article.meta_description || article.excerpt}
+        canonical={`/news/${article.slug}`}
+        ogType="article"
+        ogImage={article.featured_image_url}
+        schema={[articleSchema, breadcrumbSchema]}
+      />
       <div className="bg-white py-8 border-b">
         <div className="max-w-4xl mx-auto px-4">
           <Link

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 interface FAQItem {
   question: string;
@@ -117,8 +118,27 @@ export default function FAQ() {
     ? faqs
     : faqs.filter(faq => faq.category === selectedCategory);
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Frequently Asked Questions | SaniLady Feminine Hygiene Services"
+        description="Find answers to common questions about SaniLady's sanitary waste management and period dignity services. Get help with pricing, setup, compliance and more."
+        canonical="/faq"
+        schema={faqSchema}
+      />
       <div className="bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">

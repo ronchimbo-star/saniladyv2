@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function About() {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="About SaniLady | Feminine Hygiene Specialists | UK"
+        description="Learn about SaniLady, the UK's leading feminine hygiene and sanitary waste management specialists serving Kent, London and Essex since 2020."
+        canonical="/about"
+      />
       <div className="bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">

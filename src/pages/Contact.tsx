@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface SiteSettings {
   contact_phone: string;
@@ -295,6 +296,11 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <SEO
+        title="Contact SaniLady | Get a Free Quote | Kent, London & Essex"
+        description="Contact SaniLady for sanitary waste management and period dignity services. Get a free quote for Kent, London & Essex. Call +44-1322-879-713 or email us."
+        canonical="/contact"
+      />
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">

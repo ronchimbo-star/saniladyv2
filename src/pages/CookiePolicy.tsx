@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface Settings {
   contact_email: string;
@@ -36,6 +37,13 @@ export default function CookiePolicy() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Cookie Policy | SaniLady"
+        description="Cookie policy for SaniLady. Learn about how we use cookies on our website."
+        canonical="/cookie-policy"
+        noindex={true}
+      />
+
       <div className="bg-gradient-to-br from-green-700 to-green-900 text-white py-16">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">

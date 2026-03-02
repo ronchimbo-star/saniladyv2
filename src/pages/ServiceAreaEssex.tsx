@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const essexLocations = [
   'Chelmsford', 'Colchester', 'Basildon', 'Southend-on-Sea', 'Harlow',
@@ -10,11 +11,24 @@ const essexLocations = [
 ];
 
 export default function ServiceAreaEssex() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sanilady.co.uk' },
+      { '@type': 'ListItem', position: 2, name: 'Service Areas', item: 'https://sanilady.co.uk/service-coverage' },
+      { '@type': 'ListItem', position: 3, name: 'Essex', item: 'https://sanilady.co.uk/service-areas/essex' }
+    ]
+  };
+
   return (
     <div className="min-h-screen">
-      <title>Feminine Hygiene Services Essex | Sanitary Bins Chelmsford Colchester | SaniLady</title>
-      <meta name="description" content="Professional feminine hygiene and sanitary waste management services across Essex. Serving Chelmsford, Colchester, Basildon, Southend-on-Sea, and all Essex towns. Period dignity solutions for Essex businesses." />
-      <meta name="keywords" content="sanitary bins Essex, feminine hygiene Essex, period dignity Chelmsford, sanitary waste Colchester, sanitary bins Basildon, feminine hygiene Southend, sanitary waste management Essex, period products Essex, workplace hygiene Essex" />
+      <SEO
+        title="Sanitary Waste Services in Essex | Period Dignity Programme | SaniLady"
+        description="Professional feminine hygiene services across Essex. Sanitary waste management and period dignity employee benefits. Serving Chelmsford, Colchester & more."
+        canonical="/service-areas/essex"
+        schema={breadcrumbSchema}
+      />
 
       <div className="bg-gradient-to-br from-green-600 to-teal-600 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">

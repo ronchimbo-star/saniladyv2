@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface Testimonial {
   id: string;
@@ -36,8 +37,28 @@ export default function PeriodDignity() {
     }
   };
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    serviceType: 'Period Dignity at Work Programme',
+    provider: {
+      '@type': 'LocalBusiness',
+      name: 'SaniLady',
+      telephone: '+44-1322-879-713',
+      email: 'hello@sanilady.co.uk',
+    },
+    areaServed: ['Kent', 'London', 'Essex', 'Hertfordshire', 'Surrey', 'Sussex'],
+    description: 'HMRC-compliant period dignity employee benefit programme providing free menstrual products in UK workplaces.',
+  };
+
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Period Dignity at Work Programme | HMRC-Compliant Employee Benefit | SaniLady"
+        description="HMRC-approved period dignity programme offering free menstrual products for UK employees. Tax-efficient employee benefit across Kent, London and Essex."
+        canonical="/period-dignity"
+        schema={schema}
+      />
       <div className="bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
 
 const counties = [
   {
@@ -25,11 +25,11 @@ const counties = [
 export default function ServiceCoverage() {
   return (
     <>
-      <Helmet>
-        <title>Service Coverage | SaniLady - Kent, London & Essex</title>
-        <meta name="description" content="SaniLady provides professional feminine hygiene and sanitary waste management services across Kent, Greater London, and Essex. Find your local service area." />
-        <meta name="keywords" content="sanitary bins Kent, feminine hygiene London, period dignity Essex, sanitary waste management Kent London Essex" />
-      </Helmet>
+      <SEO
+        title="Service Coverage | Kent, London & Essex | SaniLady"
+        description="SaniLady serves businesses across Kent, London, Essex, Hertfordshire, Surrey and Sussex with sanitary waste management and period dignity services."
+        canonical="/service-coverage"
+      />
 
       <div className="min-h-screen">
         <div className="bg-gradient-to-br from-[#ec008c] to-[#e91e8c] text-white py-20">

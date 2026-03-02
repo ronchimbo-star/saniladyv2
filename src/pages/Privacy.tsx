@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface Settings {
   contact_email: string;
@@ -36,6 +37,13 @@ export default function Privacy() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Privacy Policy | SaniLady"
+        description="Privacy policy for SaniLady. Learn how we collect, use and protect your personal data."
+        canonical="/privacy"
+        noindex={true}
+      />
+
       <div className="bg-gradient-to-br from-blue-800 to-blue-900 text-white py-16">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">

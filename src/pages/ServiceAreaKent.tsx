@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const kentLocations = [
   'Maidstone', 'Canterbury', 'Ashford', 'Dartford', 'Gravesend',
@@ -9,11 +10,24 @@ const kentLocations = [
 ];
 
 export default function ServiceAreaKent() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sanilady.co.uk' },
+      { '@type': 'ListItem', position: 2, name: 'Service Areas', item: 'https://sanilady.co.uk/service-coverage' },
+      { '@type': 'ListItem', position: 3, name: 'Kent', item: 'https://sanilady.co.uk/service-areas/kent' }
+    ]
+  };
+
   return (
     <div className="min-h-screen">
-      <title>Feminine Hygiene Services Kent | Sanitary Bins Maidstone Canterbury | SaniLady</title>
-      <meta name="description" content="Professional feminine hygiene and sanitary waste management services across Kent. Serving Maidstone, Canterbury, Ashford, Dartford, Tunbridge Wells, and all Kent towns. Period dignity solutions for Kent businesses." />
-      <meta name="keywords" content="sanitary bins Kent, feminine hygiene Kent, period dignity Maidstone, sanitary waste Canterbury, sanitary bins Ashford, feminine hygiene Dartford, sanitary waste management Kent, period products Kent, workplace hygiene Kent" />
+      <SEO
+        title="Sanitary Waste Services in Kent | Period Dignity Programme | SaniLady"
+        description="Professional feminine hygiene services across Kent. Sanitary waste management and period dignity employee benefits. Serving Dartford, Maidstone, Canterbury & more."
+        canonical="/service-areas/kent"
+        schema={breadcrumbSchema}
+      />
 
       <div className="bg-gradient-to-br from-blue-600 to-teal-600 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">

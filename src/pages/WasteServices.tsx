@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 interface Testimonial {
   id: string;
@@ -36,8 +37,28 @@ export default function WasteServices() {
     }
   };
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    serviceType: 'Sanitary Waste Management',
+    provider: {
+      '@type': 'LocalBusiness',
+      name: 'SaniLady',
+      telephone: '+44-1322-879-713',
+      email: 'hello@sanilady.co.uk',
+    },
+    areaServed: ['Kent', 'London', 'Essex', 'Hertfordshire', 'Surrey', 'Sussex'],
+    description: 'Professional sanitary bin collection and disposal for UK businesses. HMRC-compliant, fully managed service across Kent, London and Essex.',
+  };
+
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Sanitary Waste Management Services | SaniLady"
+        description="Professional sanitary bin collection and disposal for UK businesses. HMRC-compliant, fully managed service across Kent, London and Essex."
+        canonical="/waste-services"
+        schema={schema}
+      />
       <div className="bg-gradient-to-br from-blue-600 via-teal-500 to-green-500 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
