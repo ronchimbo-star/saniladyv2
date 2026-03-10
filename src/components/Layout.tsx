@@ -379,6 +379,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <p className="text-sm opacity-90">
               &copy; {new Date().getFullYear()} SaniLady. All rights reserved. | {settings.contact_address}
             </p>
+            <p className="text-xs opacity-75 mt-2">
+              SaniLady is a trading name of Circular Horizons International Ltd, registered in England and Wales under company number 15821509. Registered office: Unit A 82 James Carter Road, Mildenhall, United Kingdom, IP28 7DE
+            </p>
           </div>
         </div>
       </footer>
