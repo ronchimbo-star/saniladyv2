@@ -1,1 +1,26 @@
-/*    /index.html   200
+# Explicit routes that should return 200
+/                           /index.html               200
+/about                      /about.html               200
+/contact                    /contact.html             200
+/faq                        /faq.html                 200
+/period-dignity             /period-dignity.html      200
+/waste-services             /waste-services.html      200
+/service-coverage           /service-coverage.html    200
+/service-area/kent          /service-area/kent.html   200
+/service-area/london        /service-area/london.html 200
+/service-area/essex         /service-area/essex.html  200
+/terms                      /terms.html               200
+/privacy                    /privacy.html             200
+/cookie-policy              /cookie-policy.html       200
+/news                       /news.html                200
+/news/*                     /index.html               200
+/login                      /login.html               200
+/signup                     /signup.html              200
+/dashboard                  /index.html               200
+/dashboard/*                /index.html               200
+/admin/*                    /index.html               200
+/customer/*                 /index.html               200
+/quote-request              /index.html               200
+
+# Everything else returns 404
+/*                          /index.html               404

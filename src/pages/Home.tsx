@@ -16,12 +16,24 @@ interface NewsArticle {
   published_at: string;
 }
 
+interface Testimonial {
+  id: string;
+  company_name: string;
+  contact_name: string;
+  contact_role: string;
+  testimonial_text: string;
+  rating: number;
+  service_type: string;
+}
+
 export default function Home() {
   const { user } = useAuth();
   const [latestNews, setLatestNews] = useState<NewsArticle[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {
     fetchLatestNews();
+    fetchTestimonials();
   }, []);
 
   const fetchLatestNews = async () => {
@@ -40,6 +52,22 @@ export default function Home() {
     }
   };
 
+  const fetchTestimonials = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('id, company_name, contact_name, contact_role, testimonial_text, rating, service_type')
+        .eq('is_published', true)
+        .order('display_order', { ascending: true })
+        .limit(3);
+
+      if (error) throw error;
+      setTestimonials(data || []);
+    } catch (error) {
+      console.error('Error fetching testimonials:', error);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB', {
@@ -55,7 +83,7 @@ export default function Home() {
       '@type': 'LocalBusiness',
       name: 'SaniLady',
       image: 'https://sanilady.co.uk/sanilady-hero.png',
-      description: 'Professional feminine hygiene and sanitary waste management services across Kent, London and Essex',
+      description: 'Professional feminine hygiene and sanitary waste management services across Kent, London and Essex. Fully licensed waste carrier providing compliant disposal services.',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Kent',
@@ -65,8 +93,16 @@ export default function Home() {
       telephone: '+44-1322-879-713',
       email: 'hello@sanilady.co.uk',
       url: 'https://sanilady.co.uk',
-      areaServed: ['Kent', 'London', 'Essex', 'Hertfordshire', 'Surrey', 'Sussex'],
+      areaServed: [
+        { '@type': 'City', name: 'London' },
+        { '@type': 'State', name: 'Kent' },
+        { '@type': 'State', name: 'Essex' },
+        { '@type': 'State', name: 'Hertfordshire' },
+        { '@type': 'State', name: 'Surrey' },
+        { '@type': 'State', name: 'Sussex' }
+      ],
       priceRange: '££',
+      openingHours: 'Mo-Fr 09:00-17:00',
     },
     {
       '@context': 'https://schema.org',
@@ -74,13 +110,53 @@ export default function Home() {
       name: 'SaniLady',
       url: 'https://sanilady.co.uk',
       logo: 'https://sanilady.co.uk/sanilady-logo-header.png',
+      sameAs: [
+        'https://www.linkedin.com/company/sanilady',
+      ],
       contactPoint: {
         '@type': 'ContactPoint',
         telephone: '+44-1322-879-713',
         email: 'hello@sanilady.co.uk',
         contactType: 'Customer Service',
         areaServed: 'GB',
+        availableLanguage: 'English',
       },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType: 'Sanitary Waste Disposal',
+      provider: {
+        '@type': 'LocalBusiness',
+        name: 'SaniLady',
+      },
+      areaServed: [
+        { '@type': 'City', name: 'London' },
+        { '@type': 'State', name: 'Kent' },
+        { '@type': 'State', name: 'Essex' },
+      ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Sanitary Waste Management Services',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Dignity at Work Programme',
+              description: 'Tax-free employee benefit providing personalized feminine hygiene products',
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Sanitary Waste Collection',
+              description: 'Licensed sanitary bin collection and disposal services',
+            }
+          }
+        ]
+      }
     },
   ];
 
@@ -122,13 +198,13 @@ export default function Home() {
                   <>
                     <Link
                       to="/contact#quote"
-                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                      className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
                     >
                       Get a Quote
                     </Link>
                     <Link
                       to="/about"
-                      className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center border-2 border-white"
                     >
                       Learn More
                     </Link>
@@ -325,6 +401,101 @@ export default function Home() {
             >
               View All News
             </Link>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              Fully Licensed & Compliant
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Your trusted partner in regulated waste management and workplace safety
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl p-8 text-center border border-blue-100">
+              <div className="text-5xl mb-4">✓</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                Licensed Waste Carrier
+              </h3>
+              <p className="text-gray-600">
+                Fully registered and licensed for commercial sanitary waste collection and disposal across the UK
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-8 text-center border border-green-100">
+              <div className="text-5xl mb-4">📋</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                Full Compliance
+              </h3>
+              <p className="text-gray-600">
+                Waste transfer notes, duty of care documentation, and complete regulatory compliance guaranteed
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8 text-center border border-purple-100">
+              <div className="text-5xl mb-4">🏆</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                HMRC Approved
+              </h3>
+              <p className="text-gray-600">
+                Our Dignity at Work programme is HMRC-compliant as a tax-free employee benefit
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {testimonials.length > 0 && (
+        <div className="bg-gradient-to-br from-pink-50 to-purple-50 py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                What Our Clients Say
+              </h2>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                Trusted by organizations across the UK
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {testimonials.map((testimonial) => (
+                <div
+                  key={testimonial.id}
+                  className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow"
+                >
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-5 h-5 ${
+                          i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'
+                        }`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-6 italic">
+                    "{testimonial.testimonial_text}"
+                  </p>
+                  <div className="border-t pt-4">
+                    <p className="font-bold text-gray-800">{testimonial.contact_name}</p>
+                    <p className="text-sm text-gray-600">{testimonial.contact_role}</p>
+                    <p className="text-sm text-pink-600 font-semibold">{testimonial.company_name}</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {testimonial.service_type === 'waste' ? 'Waste Management' : 'Period Dignity Programme'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

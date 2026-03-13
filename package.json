@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:seo": "node scripts/build-and-prerender.mjs",
+    "build:seo": "node scripts/generate-sitemap.mjs && node scripts/build-and-prerender.mjs",
     "preview": "vite preview",
-    "prerender": "node scripts/prerender.mjs"
+    "prerender": "node scripts/prerender.mjs",
+    "sitemap": "node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
