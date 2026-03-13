@@ -26,10 +26,17 @@ interface Testimonial {
   service_type: string;
 }
 
+interface FAQ {
+  question: string;
+  answer: string;
+  category: string;
+}
+
 export default function Home() {
   const { user } = useAuth();
   const [latestNews, setLatestNews] = useState<NewsArticle[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLatestNews();
@@ -76,6 +83,75 @@ export default function Home() {
       year: 'numeric'
     });
   };
+
+  const toggleFaq = (question: string) => {
+    setOpenFaq(openFaq === question ? null : question);
+  };
+
+  const faqs: FAQ[] = [
+    {
+      category: 'Legal & Compliance',
+      question: 'Are sanitary bins a legal requirement in the UK?',
+      answer: 'Yes, UK regulations require businesses to provide hygienic sanitary waste disposal in women\'s washrooms. Under the Workplace (Health, Safety and Welfare) Regulations 1992, employers must provide "suitable means" for disposing of sanitary dressings in toilets used by women. Sanitary waste is also classified as offensive waste under the Environmental Protection Act 1990 and must be disposed of by a licensed waste carrier. Failure to comply can result in fines and legal penalties.'
+    },
+    {
+      category: 'Legal & Compliance',
+      question: 'Is sanitary waste classified as hazardous?',
+      answer: 'Generally, no. Sanitary waste is usually classified as offensive waste rather than hazardous, meaning it\'s non-infectious but can be unpleasant. However, it must still be handled by a licensed waste carrier under duty of care regulations.'
+    },
+    {
+      category: 'Legal & Compliance',
+      question: 'Can my cleaning staff handle sanitary waste disposal?',
+      answer: 'No. Under the Environmental Protection Act 1990, only registered waste carriers licensed by the Environment Agency can legally collect and dispose of sanitary waste. Your regular cleaning staff cannot be made responsible for offensive waste disposal, and doing so could breach regulations.'
+    },
+    {
+      category: 'Service Details',
+      question: 'How often should sanitary bins be emptied?',
+      answer: 'The frequency depends on your footfall and number of female employees or visitors. Most businesses choose fortnightly or monthly services. For busy locations such as hospitality venues, retail stores, or offices with high footfall, weekly collection is recommended to maintain hygiene and prevent odours. We\'ll advise on the right schedule based on your specific needs.'
+    },
+    {
+      category: 'Service Details',
+      question: 'How do SaniLady\'s sanitary bin services work?',
+      answer: 'It\'s simple and discreet. We provide the sanitary bins, and on each scheduled visit, our team removes and disposes of the waste safely, replaces bin liners, cleans and disinfects each unit, refreshes the bins to maintain hygiene, and replaces bins if damaged. We handle everything so you remain compliant without any hassle.'
+    },
+    {
+      category: 'Service Details',
+      question: 'What should I do before a service visit?',
+      answer: 'Simply leave your bins in the agreed collection point. Our team will handle the rest—removing waste, cleaning, and returning fresh bins ready for use. No preparation is needed on your part.'
+    },
+    {
+      category: 'Service Details',
+      question: 'Do you offer sanitary bag dispensers?',
+      answer: 'Yes. We recommend adding a sanitary bag dispenser (£2.50 per month) alongside each bin. These are wall-mounted and topped up every month during your regular service, ensuring users always have access to disposal bags. This helps with odour control and keeps washrooms tidy.'
+    },
+    {
+      category: 'Environmental & Safety',
+      question: 'What happens to sanitary waste after collection?',
+      answer: 'Sanitary waste is typically disposed of through incineration at licensed facilities, which removes health risks, or sent to landfill. As an environmentally conscious provider, we work with licensed partners to ensure all waste is handled safely and in compliance with UK regulations.'
+    },
+    {
+      category: 'Environmental & Safety',
+      question: 'Can I put sanitary products down the toilet?',
+      answer: 'Absolutely not. Sanitary towels, tampons, wipes, and pads should never be flushed. Even products labelled as "flush-friendly" can cause expensive sewer blockages, toilet overflows, and environmental pollution in waterways. Always provide sufficient sanitary bins to prevent flushing.'
+    },
+    {
+      category: 'Coverage & Pricing',
+      question: 'What areas do you cover?',
+      answer: 'SaniLady proudly serves businesses across Kent, London, Essex, Hertfordshire, Surrey, and Sussex. Contact us to check availability in your postcode.'
+    },
+    {
+      category: 'Coverage & Pricing',
+      question: 'How do I get a quote?',
+      answer: 'Simply contact us via our online form or email. We\'ll discuss your requirements and provide a tailored quote based on your bin quantity and preferred service frequency.'
+    },
+    {
+      category: 'Additional Services',
+      question: 'Do you service male washrooms too?',
+      answer: 'Yes, increasingly. Awareness around male incontinence is growing, and many workplaces now offer disposal bins in men\'s toilets. From younger men with medical conditions to older individuals managing prostate health, we provide discreet disposal solutions for male washrooms too.'
+    }
+  ];
+
+  const faqCategories = Array.from(new Set(faqs.map(faq => faq.category)));
 
   const schema = [
     {
@@ -499,6 +575,79 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      <div className="relative bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-400/10 to-purple-400/10 blur-3xl"></div>
+        <div className="max-w-7xl mx-auto px-4 relative">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xl opacity-90 max-w-2xl mx-auto">
+              Everything you need to know about our sanitary waste services
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {faqCategories.map((category) => (
+              <div key={category} className="space-y-4">
+                <h3 className="text-xl font-bold mb-4 pb-2 border-b border-white/30">
+                  {category}
+                </h3>
+                {faqs
+                  .filter((faq) => faq.category === category)
+                  .map((faq, index) => (
+                    <div
+                      key={index}
+                      className="bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden border border-white/20 hover:bg-white/15 transition-all"
+                    >
+                      <button
+                        onClick={() => toggleFaq(faq.question)}
+                        className="w-full text-left px-6 py-4 flex justify-between items-start gap-4"
+                      >
+                        <span className="font-semibold text-white">
+                          {faq.question}
+                        </span>
+                        <svg
+                          className={`w-5 h-5 flex-shrink-0 transition-transform ${
+                            openFaq === faq.question ? 'rotate-180' : ''
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </button>
+                      {openFaq === faq.question && (
+                        <div className="px-6 pb-4 text-white/90 leading-relaxed">
+                          {faq.answer}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-lg opacity-90 mb-4">
+              Still have questions?
+            </p>
+            <Link
+              to="/faq"
+              className="inline-block bg-white text-pink-600 px-8 py-3 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all"
+            >
+              View Full FAQ
+            </Link>
+          </div>
+        </div>
+      </div>
 
       <div className="bg-pink-50 py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
