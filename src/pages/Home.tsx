@@ -245,9 +245,20 @@ export default function Home() {
         schema={schema}
       />
       <div className="relative bg-gradient-to-br from-[#ec008c] via-[#e91e8c] to-[#8b5fbf] text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden md:block">
+          <div className="relative h-full">
+            <img
+              src="/PFASimage-1.webp"
+              alt="Period dignity products"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#ec008c] via-[#e91e8c]/60 to-transparent"></div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 relative">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="text-left space-y-6">
+            <div className="text-left space-y-6 relative z-10">
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
                 Your Partner in Feminine Hygiene & Period Dignity
               </h1>
@@ -289,17 +300,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative flex justify-center items-center">
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute inset-0 bg-white opacity-5 rounded-full blur-2xl transform scale-90 animate-pulse" style={{animationDelay: '1s'}}></div>
-              <picture>
-                <source srcSet="/sanilady-sanitary-waste.webp" type="image/webp" />
-                <img
-                  src="/sanilady-sanitary-waste.png"
-                  alt="SaniLady Period Dignity"
-                  className="relative w-full max-w-2xl drop-shadow-2xl transform hover:scale-110 transition-transform duration-700 animate-float"
-                />
-              </picture>
+            <div className="relative md:hidden">
+              <img
+                src="/PFASimage-1.webp"
+                alt="Period dignity products"
+                className="w-full rounded-2xl shadow-2xl"
+              />
             </div>
           </div>
         </div>
