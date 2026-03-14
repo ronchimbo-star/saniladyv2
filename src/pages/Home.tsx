@@ -270,13 +270,13 @@ export default function Home() {
                   <>
                     <Link
                       to="/dashboard"
-                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center shadow-lg"
                     >
                       Go to Dashboard
                     </Link>
                     <Link
                       to="/quote-request"
-                      className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                      className="bg-gradient-to-r from-[#ff5722] to-[#ff6f3c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center shadow-lg"
                     >
                       Request a Quote
                     </Link>
@@ -285,13 +285,13 @@ export default function Home() {
                   <>
                     <Link
                       to="/contact#quote"
-                      className="bg-gradient-to-r from-[#ec008c] to-[#e91e8c] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center"
+                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center shadow-lg"
                     >
                       Get a Quote
                     </Link>
                     <Link
                       to="/about"
-                      className="bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transform hover:scale-[1.05] transition-all text-center border-2 border-white"
+                      className="bg-transparent text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-pink-600 transition-all text-center border-2 border-white shadow-lg"
                     >
                       Learn More
                     </Link>
