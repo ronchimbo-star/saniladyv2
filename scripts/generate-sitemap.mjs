@@ -27,6 +27,7 @@ const staticPages = [
   { url: '/faq', changefreq: 'monthly', priority: '0.7' },
   { url: '/period-dignity', changefreq: 'weekly', priority: '0.9' },
   { url: '/waste-services', changefreq: 'weekly', priority: '0.9' },
+  { url: '/sanitary-bins', changefreq: 'weekly', priority: '0.9' },
   { url: '/service-coverage', changefreq: 'monthly', priority: '0.8' },
   { url: '/service-area/kent', changefreq: 'monthly', priority: '0.8' },
   { url: '/service-area/london', changefreq: 'monthly', priority: '0.8' },

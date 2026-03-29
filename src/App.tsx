@@ -36,6 +36,7 @@ const About = lazy(() => import('./pages/About'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const PeriodDignity = lazy(() => import('./pages/PeriodDignity'));
 const WasteServices = lazy(() => import('./pages/WasteServices'));
+const SanitaryBins = lazy(() => import('./pages/SanitaryBins'));
 const ServiceCoverage = lazy(() => import('./pages/ServiceCoverage'));
 const ServiceAreaKent = lazy(() => import('./pages/ServiceAreaKent'));
 const ServiceAreaLondon = lazy(() => import('./pages/ServiceAreaLondon'));
@@ -262,6 +263,7 @@ function App() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/period-dignity" element={<PeriodDignity />} />
             <Route path="/waste-services" element={<WasteServices />} />
+            <Route path="/sanitary-bins" element={<SanitaryBins />} />
             <Route path="/service-coverage" element={<ServiceCoverage />} />
             <Route path="/service-areas/kent" element={<ServiceAreaKent />} />
             <Route path="/service-areas/london" element={<ServiceAreaLondon />} />
