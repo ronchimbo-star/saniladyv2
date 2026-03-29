@@ -21,6 +21,7 @@ interface BaseProduct {
   name: string;
   slug: string;
   description: string;
+  detailed_description?: string;
   features: string[];
   specifications: Record<string, string>;
   category: string;
@@ -32,6 +33,7 @@ export default function SanitaryBins() {
   const [products, setProducts] = useState<BaseProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
+  const [selectedImages, setSelectedImages] = useState<Record<string, number>>({});
 
   useEffect(() => {
     fetchProducts();
@@ -84,6 +86,17 @@ export default function SanitaryBins() {
     setSelectedVariants(prev => ({
       ...prev,
       [productId]: variantId
+    }));
+    setSelectedImages(prev => ({
+      ...prev,
+      [`${productId}-${variantId}`]: 0
+    }));
+  };
+
+  const handleImageSelect = (productId: string, variantId: string, imageIndex: number) => {
+    setSelectedImages(prev => ({
+      ...prev,
+      [`${productId}-${variantId}`]: imageIndex
     }));
   };
 
@@ -148,6 +161,15 @@ export default function SanitaryBins() {
                 const selectedVariantId = selectedVariants[product.id];
                 const currentVariant = product.variants.find(v => v.id === selectedVariantId) || product.variants[0];
 
+                const allImages = currentVariant ? [
+                  currentVariant.image_url,
+                  ...(currentVariant.additional_images || [])
+                ].filter(Boolean) : [];
+
+                const imageKey = `${product.id}-${currentVariant?.id}`;
+                const currentImageIndex = selectedImages[imageKey] || 0;
+                const displayImage = allImages[currentImageIndex] || currentVariant?.image_url || '/placeholder-bin.jpg';
+
                 return (
                   <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow group relative">
                     {product.category === 'Automatic Bins' && (
@@ -155,12 +177,36 @@ export default function SanitaryBins() {
                         Premium
                       </div>
                     )}
-                    <div className="relative h-64 overflow-hidden bg-white">
-                      <img
-                        src={currentVariant?.image_url || '/placeholder-bin.jpg'}
-                        alt={`${product.name} - ${currentVariant?.variant_name}`}
-                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                      />
+                    <div>
+                      <div className="relative h-64 overflow-hidden bg-white">
+                        <img
+                          src={displayImage}
+                          alt={`${product.name} - ${currentVariant?.variant_name}`}
+                          className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+
+                      {allImages.length > 1 && (
+                        <div className="flex gap-2 px-4 pb-3 bg-white overflow-x-auto">
+                          {allImages.map((img, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => handleImageSelect(product.id, currentVariant?.id || '', idx)}
+                              className={`flex-shrink-0 w-16 h-16 border-2 rounded-lg overflow-hidden transition-all ${
+                                currentImageIndex === idx
+                                  ? 'border-pink-600 ring-2 ring-pink-200'
+                                  : 'border-gray-200 hover:border-pink-300'
+                              }`}
+                            >
+                              <img
+                                src={img}
+                                alt={`View ${idx + 1}`}
+                                className="w-full h-full object-contain p-1 bg-white"
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-2">
@@ -192,7 +238,7 @@ export default function SanitaryBins() {
                         </div>
                       )}
 
-                      <ul className="space-y-2">
+                      <ul className="space-y-2 mb-4">
                         {product.features.slice(0, 3).map((feature, idx) => (
                           <li key={idx} className="flex items-start text-sm text-gray-600">
                             <span className="text-pink-600 mr-2">✓</span>
@@ -200,6 +246,21 @@ export default function SanitaryBins() {
                           </li>
                         ))}
                       </ul>
+
+                      {product.detailed_description && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <details className="group">
+                            <summary className="cursor-pointer text-sm font-semibold text-pink-600 hover:text-pink-700 flex items-center justify-between">
+                              <span>View Full Description</span>
+                              <span className="transform group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div
+                              className="mt-3 text-sm text-gray-600 prose prose-sm max-w-none"
+                              dangerouslySetInnerHTML={{ __html: product.detailed_description }}
+                            />
+                          </details>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
