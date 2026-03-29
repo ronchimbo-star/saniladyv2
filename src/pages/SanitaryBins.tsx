@@ -3,23 +3,33 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import SEO from '../components/SEO';
 
-interface SanitaryBinProduct {
+interface ProductVariant {
+  id: string;
+  sku: string;
+  variant_name: string;
+  color: string | null;
+  capacity: string | null;
+  price: number;
+  image_url: string;
+  additional_images: string[];
+  stock_status: string;
+  is_default: boolean;
+}
+
+interface BaseProduct {
   id: string;
   name: string;
   slug: string;
   description: string;
-  capacity: string;
-  category: string;
   features: string[];
-  variants: string[];
-  price_from: number;
-  image_url: string;
-  badge?: string;
-  is_featured: boolean;
+  specifications: Record<string, string>;
+  category: string;
+  brand: string;
+  variants: ProductVariant[];
 }
 
 export default function SanitaryBins() {
-  const [products, setProducts] = useState<SanitaryBinProduct[]>([]);
+  const [products, setProducts] = useState<BaseProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,13 +38,31 @@ export default function SanitaryBins() {
 
   async function fetchProducts() {
     try {
-      const { data, error } = await supabase
-        .from('sanitary_bin_products')
+      const { data: baseProducts, error: baseError } = await supabase
+        .from('sanitary_bin_base_products')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setProducts(data || []);
+      if (baseError) throw baseError;
+
+      const productsWithVariants = await Promise.all(
+        (baseProducts || []).map(async (product) => {
+          const { data: variants, error: variantsError } = await supabase
+            .from('sanitary_bin_variants')
+            .select('*')
+            .eq('base_product_id', product.id)
+            .order('is_default', { ascending: false });
+
+          if (variantsError) {
+            console.error('Error fetching variants:', variantsError);
+            return { ...product, variants: [] };
+          }
+
+          return { ...product, variants: variants || [] };
+        })
+      );
+
+      setProducts(productsWithVariants);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -126,59 +154,70 @@ export default function SanitaryBins() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products.map((product) => (
-                <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow group relative">
-                  {product.badge && (
-                    <div className="absolute top-4 right-4 bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
-                      {product.badge}
-                    </div>
-                  )}
-                  <div className="relative h-64 overflow-hidden bg-gray-100">
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-bold text-gray-800">{product.name}</h3>
-                      <span className="text-sm font-semibold text-pink-600 whitespace-nowrap ml-2">{product.capacity}</span>
-                    </div>
-                    <p className="text-gray-600 mb-4 text-sm">{product.description}</p>
+              {products.map((product) => {
+                const defaultVariant = product.variants.find(v => v.is_default) || product.variants[0];
+                const minPrice = Math.min(...product.variants.map(v => v.price));
 
-                    <div className="mb-4">
-                      <p className="text-xs font-semibold text-gray-500 mb-2">Available in:</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {product.variants.map((variant) => (
-                          <span key={variant} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                            {variant}
-                          </span>
+                return (
+                  <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow group relative">
+                    {product.category === 'Automatic Bins' && (
+                      <div className="absolute top-4 right-4 bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
+                        Premium
+                      </div>
+                    )}
+                    <div className="relative h-64 overflow-hidden bg-gray-100">
+                      <img
+                        src={defaultVariant?.image_url || '/placeholder-bin.jpg'}
+                        alt={product.name}
+                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-xl font-bold text-gray-800">{product.name}</h3>
+                        <span className="text-sm font-semibold text-pink-600 whitespace-nowrap ml-2">
+                          {product.specifications.capacity || ''}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 mb-4 text-sm">{product.description}</p>
+
+                      {product.variants.length > 1 && (
+                        <div className="mb-4">
+                          <p className="text-xs font-semibold text-gray-500 mb-2">Available in:</p>
+                          <div className="flex gap-2 flex-wrap">
+                            {product.variants.map((variant) => (
+                              <span key={variant.id} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                                {variant.color}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <ul className="space-y-2 mb-6">
+                        {product.features.slice(0, 3).map((feature, idx) => (
+                          <li key={idx} className="flex items-start text-sm text-gray-600">
+                            <span className="text-pink-600 mr-2">✓</span>
+                            <span>{feature}</span>
+                          </li>
                         ))}
+                      </ul>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span className="text-lg font-bold text-gray-800">
+                          {product.variants.length > 1 ? `From £${minPrice.toFixed(2)}` : `£${minPrice.toFixed(2)}`}
+                        </span>
+                        <Link
+                          to="/contact#quote"
+                          className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm font-semibold"
+                        >
+                          Get Quote
+                        </Link>
                       </div>
                     </div>
-
-                    <ul className="space-y-2 mb-6">
-                      {product.features.slice(0, 3).map((feature, idx) => (
-                        <li key={idx} className="flex items-start text-sm text-gray-600">
-                          <span className="text-pink-600 mr-2">✓</span>
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-lg font-bold text-gray-800">From £{product.price_from.toFixed(2)}</span>
-                      <Link
-                        to="/contact#quote"
-                        className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm font-semibold"
-                      >
-                        Get Quote
-                      </Link>
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
