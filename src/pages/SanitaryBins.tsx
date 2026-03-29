@@ -87,33 +87,6 @@ export default function SanitaryBins() {
     }));
   };
 
-  const accessories = [
-    {
-      name: 'Sanitary Bin Liners',
-      description: 'Biodegradable liners designed to fit all bin sizes. Pack of 100.',
-      image: 'https://images.pexels.com/photos/7656746/pexels-photo-7656746.jpeg?auto=compress&cs=tinysrgb&w=400',
-      price: '£12.99'
-    },
-    {
-      name: 'Disposal Bags',
-      description: 'Hygienic disposal bags with easy-seal closure. Pack of 200.',
-      image: 'https://images.pexels.com/photos/7656746/pexels-photo-7656746.jpeg?auto=compress&cs=tinysrgb&w=400',
-      price: '£8.99'
-    },
-    {
-      name: 'Odour Control Sachets',
-      description: 'Bio-enzymatic sachets that neutralise odours. Pack of 12.',
-      image: 'https://images.pexels.com/photos/7656746/pexels-photo-7656746.jpeg?auto=compress&cs=tinysrgb&w=400',
-      price: '£15.99'
-    },
-    {
-      name: 'Bag Dispenser',
-      description: 'Wall-mounted dispenser for disposal bags. Holds up to 50 bags.',
-      image: 'https://images.pexels.com/photos/7656746/pexels-photo-7656746.jpeg?auto=compress&cs=tinysrgb&w=400',
-      price: '£22.99'
-    }
-  ];
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -303,40 +276,6 @@ export default function SanitaryBins() {
                 </li>
               </ul>
             </div>
-          </div>
-        </div>
-
-        <div className="mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">Essential Accessories</h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Complete your sanitary waste solution with our range of hygienic accessories
-          </p>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {accessories.map((accessory, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
-                <div className="h-48 overflow-hidden bg-gray-100">
-                  <img
-                    src={accessory.image}
-                    alt={accessory.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">{accessory.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4">{accessory.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-pink-600">{accessory.price}</span>
-                    <Link
-                      to="/contact#quote"
-                      className="text-pink-600 hover:text-pink-700 font-semibold text-sm"
-                    >
-                      Add to Quote →
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
