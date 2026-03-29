@@ -31,6 +31,7 @@ interface BaseProduct {
 export default function SanitaryBins() {
   const [products, setProducts] = useState<BaseProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchProducts();
@@ -63,12 +64,28 @@ export default function SanitaryBins() {
       );
 
       setProducts(productsWithVariants);
+
+      const initialSelectedVariants: Record<string, string> = {};
+      productsWithVariants.forEach((product) => {
+        const defaultVariant = product.variants.find((v: ProductVariant) => v.is_default) || product.variants[0];
+        if (defaultVariant) {
+          initialSelectedVariants[product.id] = defaultVariant.id;
+        }
+      });
+      setSelectedVariants(initialSelectedVariants);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
     }
   }
+
+  const handleVariantChange = (productId: string, variantId: string) => {
+    setSelectedVariants(prev => ({
+      ...prev,
+      [productId]: variantId
+    }));
+  };
 
   const accessories = [
     {
@@ -155,8 +172,8 @@ export default function SanitaryBins() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {products.map((product) => {
-                const defaultVariant = product.variants.find(v => v.is_default) || product.variants[0];
-                const minPrice = Math.min(...product.variants.map(v => v.price));
+                const selectedVariantId = selectedVariants[product.id];
+                const currentVariant = product.variants.find(v => v.id === selectedVariantId) || product.variants[0];
 
                 return (
                   <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow group relative">
@@ -165,10 +182,10 @@ export default function SanitaryBins() {
                         Premium
                       </div>
                     )}
-                    <div className="relative h-64 overflow-hidden bg-gray-100">
+                    <div className="relative h-64 overflow-hidden bg-white">
                       <img
-                        src={defaultVariant?.image_url || '/placeholder-bin.jpg'}
-                        alt={product.name}
+                        src={currentVariant?.image_url || '/placeholder-bin.jpg'}
+                        alt={`${product.name} - ${currentVariant?.variant_name}`}
                         className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
@@ -186,15 +203,23 @@ export default function SanitaryBins() {
                           <p className="text-xs font-semibold text-gray-500 mb-2">Available in:</p>
                           <div className="flex gap-2 flex-wrap">
                             {product.variants.map((variant) => (
-                              <span key={variant.id} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                              <button
+                                key={variant.id}
+                                onClick={() => handleVariantChange(product.id, variant.id)}
+                                className={`px-3 py-1 text-xs rounded-full transition-all ${
+                                  selectedVariantId === variant.id
+                                    ? 'bg-pink-600 text-white font-semibold'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                              >
                                 {variant.color}
-                              </span>
+                              </button>
                             ))}
                           </div>
                         </div>
                       )}
 
-                      <ul className="space-y-2 mb-6">
+                      <ul className="space-y-2">
                         {product.features.slice(0, 3).map((feature, idx) => (
                           <li key={idx} className="flex items-start text-sm text-gray-600">
                             <span className="text-pink-600 mr-2">✓</span>
@@ -202,18 +227,6 @@ export default function SanitaryBins() {
                           </li>
                         ))}
                       </ul>
-
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span className="text-lg font-bold text-gray-800">
-                          {product.variants.length > 1 ? `From £${minPrice.toFixed(2)}` : `£${minPrice.toFixed(2)}`}
-                        </span>
-                        <Link
-                          to="/contact#quote"
-                          className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm font-semibold"
-                        >
-                          Get Quote
-                        </Link>
-                      </div>
                     </div>
                   </div>
                 );
