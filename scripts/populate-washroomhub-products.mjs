@@ -61,12 +61,12 @@ const products = [
         variant_name: 'White',
         sku: 'WR-ASB-22L-AUTO-W-2',
         price: 48.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_1_6.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_1_6.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_2_4.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_3_4.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_4_4.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_5_4.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_2_4.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_3_4.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_4_4.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-w-2_5_4.jpg'
         ],
         stock_status: 'In Stock',
         is_default: true
@@ -75,12 +75,12 @@ const products = [
         variant_name: 'Black',
         sku: 'WR-ASB-22L-AUTO-B-2',
         price: 48.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_1_6.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_1_6.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_2_4.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_3_4.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_4_4.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_5_4.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_2_4.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_3_4.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_4_4.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-22l-auto-b-2_5_4.jpg'
         ],
         stock_status: 'In Stock',
         is_default: false
@@ -138,11 +138,11 @@ const products = [
         variant_name: 'White',
         sku: 'WR-PSB-22L-W',
         price: 28.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_1_4.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_1_4.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_2_2.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_3_2.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_4_2.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_2_2.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_3_2.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-w_4_2.jpg'
         ],
         stock_status: 'In Stock',
         is_default: true
@@ -151,11 +151,11 @@ const products = [
         variant_name: 'Charcoal Grey',
         sku: 'WR-PSB-22L-G',
         price: 28.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_1_3.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_1_3.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_2_2.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_3_2.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_4_1.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_2_2.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_3_2.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-22l-g_4_1.jpg'
         ],
         stock_status: 'In Stock',
         is_default: false
@@ -200,10 +200,10 @@ const products = [
         variant_name: 'White',
         sku: 'WR-ASB-15L-W',
         price: 39.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-w_1_2.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-w_1_2.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-w_2_2.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-w_3_2.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-w_2_2.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-w_3_2.jpg'
         ],
         stock_status: 'In Stock',
         is_default: true
@@ -212,10 +212,10 @@ const products = [
         variant_name: 'Black',
         sku: 'WR-ASB-15L-B',
         price: 39.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-b_1_2.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-b_1_2.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-b_2_2.jpg',
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-b_3_2.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-b_2_2.jpg',
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-asb-15l-b_3_2.jpg'
         ],
         stock_status: 'In Stock',
         is_default: false
@@ -259,9 +259,9 @@ const products = [
         variant_name: 'Brushed Steel',
         sku: 'WR-WMB-9L-SS',
         price: 34.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-wmb-9l-ss_1_1.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-wmb-9l-ss_1_1.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-wmb-9l-ss_2_1.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-wmb-9l-ss_2_1.jpg'
         ],
         stock_status: 'In Stock',
         is_default: true
@@ -306,9 +306,9 @@ const products = [
         variant_name: 'White',
         sku: 'WR-PSB-5L-W',
         price: 18.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-w_1_1.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-w_1_1.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-w_2_1.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-w_2_1.jpg'
         ],
         stock_status: 'In Stock',
         is_default: true
@@ -317,9 +317,9 @@ const products = [
         variant_name: 'Charcoal Grey',
         sku: 'WR-PSB-5L-G',
         price: 18.95,
-        image_url: 'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-g_1_1.jpg',
+        image_url: 'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-g_1_1.jpg',
         additional_images: [
-          'https://cdn.zapem.co.uk/unsafe/filters:fill(white,1):format(webp):quality(90)/https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-g_2_1.jpg'
+          'https://www.washroomhub.co.uk/media/catalog/product/cache/a3ffc2f62e0d0d0ae2e25f8b47b3cc2b/w/r/wr-psb-5l-g_2_1.jpg'
         ],
         stock_status: 'In Stock',
         is_default: false
