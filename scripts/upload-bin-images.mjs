@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'fs';
 import { config } from 'dotenv';
+import puppeteer from 'puppeteer';
 
 config();
 
@@ -8,116 +8,140 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const productImages = [
-  {
-    slug: 'classic-pedal-bin-white',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/s/a/sani-bin_-8.jpg',
-    fileName: 'pedal-bin-white.jpg'
-  },
-  {
-    slug: 'classic-pedal-bin-grey',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/s/a/sani-bin_-8.jpg',
-    fileName: 'pedal-bin-grey.jpg'
-  },
-  {
-    slug: 'compact-pedal-bin',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/s/a/sani-bin_-15.jpg',
-    fileName: 'compact-pedal-bin.jpg'
-  },
-  {
-    slug: 'automatic-sensor-bin-white',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/w/r/wr-cd-7002-01__11319.jpg',
-    fileName: 'automatic-sensor-white.jpg'
-  },
-  {
-    slug: 'automatic-sensor-bin-grey',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/w/r/wr-cd-7002-01__11319.jpg',
-    fileName: 'automatic-sensor-grey.jpg'
-  },
-  {
-    slug: 'automatic-sensor-bin-xl',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/w/r/wr-cd-7002-01__11319.jpg',
-    fileName: 'automatic-sensor-xl.jpg'
-  },
-  {
-    slug: 'stainless-steel-chute-bin',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/w/r/wr-pl72mbs.jpg',
-    fileName: 'stainless-chute.jpg'
-  },
-  {
-    slug: 'stainless-steel-flap-bin',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/w/r/wr-pl73mbs__53749_1.jpg',
-    fileName: 'stainless-flap.jpg'
-  },
-  {
-    slug: 'stainless-steel-slim-bin',
-    imageUrl: 'https://cdn.zapem.co.uk/unsafe/fit-in/center/middle/smart/filters:fill%28white,1%29:format%28webp%29:upscale%28%29:quality%2890%29/media/catalog/product/w/r/wr-pl70mbs.jpg',
-    fileName: 'stainless-slim.jpg'
-  }
-];
+const BUCKET_NAME = 'sanitary-bin-images';
 
-async function downloadAndUploadImage(imageUrl, fileName, slug) {
+async function downloadImageWithBrowser(url) {
+  let browser;
   try {
-    console.log(`Downloading ${fileName}...`);
-    const response = await fetch(imageUrl);
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    });
 
-    if (!response.ok) {
-      throw new Error(`Failed to download: ${response.statusText}`);
+    const page = await browser.newPage();
+
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+
+    const response = await page.goto(url, {
+      waitUntil: 'networkidle0',
+      timeout: 30000
+    });
+
+    if (!response || response.status() !== 200) {
+      throw new Error(`HTTP ${response?.status()}`);
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const buffer = await response.buffer();
+    return buffer;
+  } catch (error) {
+    console.error(`    Error: ${error.message}`);
+    return null;
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
+}
 
-    console.log(`Uploading ${fileName} to Supabase...`);
-    const { data, error } = await supabase.storage
-      .from('sanitary-bin-images')
-      .upload(fileName, buffer, {
+async function uploadToStorage(buffer, filename) {
+  try {
+    const { error } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(filename, buffer, {
         contentType: 'image/jpeg',
         upsert: true
       });
 
     if (error) {
-      console.error(`Error uploading ${fileName}:`, error);
+      console.error(`    Upload error: ${error.message}`);
       return null;
     }
 
     const { data: urlData } = supabase.storage
-      .from('sanitary-bin-images')
-      .getPublicUrl(fileName);
+      .from(BUCKET_NAME)
+      .getPublicUrl(filename);
 
-    console.log(`✓ Uploaded ${fileName}`);
     return urlData.publicUrl;
   } catch (error) {
-    console.error(`Error processing ${fileName}:`, error);
+    console.error(`    Upload error: ${error.message}`);
     return null;
   }
 }
 
-async function updateProductImages() {
-  console.log('Starting image upload process...\n');
+async function processImages() {
+  console.log('Fetching variants with external images...\n');
 
-  for (const product of productImages) {
-    const publicUrl = await downloadAndUploadImage(
-      product.imageUrl,
-      product.fileName,
-      product.slug
-    );
+  const { data: variants, error } = await supabase
+    .from('sanitary_bin_variants')
+    .select('id, sku, image_url, additional_images')
+    .like('image_url', '%washroomhub.co.uk%');
 
-    if (publicUrl) {
-      const { error } = await supabase
-        .from('sanitary_bin_products')
-        .update({ image_url: publicUrl })
-        .eq('slug', product.slug);
+  if (error) {
+    console.error('Error fetching variants:', error);
+    return;
+  }
 
-      if (error) {
-        console.error(`Error updating ${product.slug}:`, error);
-      } else {
-        console.log(`✓ Updated database for ${product.slug}\n`);
+  console.log(`Found ${variants.length} variants to process\n`);
+
+  for (const variant of variants) {
+    console.log(`Processing: ${variant.sku}`);
+
+    const mainImageFilename = `${variant.sku.toLowerCase()}_main.jpg`;
+    console.log(`  Downloading main image...`);
+
+    const mainImageBuffer = await downloadImageWithBrowser(variant.image_url);
+
+    let newMainImageUrl = variant.image_url;
+    if (mainImageBuffer) {
+      const uploadedUrl = await uploadToStorage(mainImageBuffer, mainImageFilename);
+      if (uploadedUrl) {
+        newMainImageUrl = uploadedUrl;
+        console.log(`  ✓ Main image uploaded`);
       }
+    }
+
+    const additionalImages = variant.additional_images || [];
+    const newAdditionalImages = [];
+
+    for (let i = 0; i < additionalImages.length; i++) {
+      const imageUrl = additionalImages[i];
+      const filename = `${variant.sku.toLowerCase()}_${i + 1}.jpg`;
+
+      console.log(`  Downloading additional image ${i + 1}...`);
+      const buffer = await downloadImageWithBrowser(imageUrl);
+
+      if (buffer) {
+        const uploadedUrl = await uploadToStorage(buffer, filename);
+        if (uploadedUrl) {
+          newAdditionalImages.push(uploadedUrl);
+          console.log(`  ✓ Additional image ${i + 1} uploaded`);
+        } else {
+          newAdditionalImages.push(imageUrl);
+        }
+      } else {
+        newAdditionalImages.push(imageUrl);
+      }
+    }
+
+    const { error: updateError } = await supabase
+      .from('sanitary_bin_variants')
+      .update({
+        image_url: newMainImageUrl,
+        additional_images: newAdditionalImages
+      })
+      .eq('id', variant.id);
+
+    if (updateError) {
+      console.error(`  Error updating variant:`, updateError);
+    } else {
+      console.log(`  ✓ Database updated\n`);
     }
   }
 
-  console.log('Image upload process complete!');
+  console.log('All images processed!');
 }
 
-updateProductImages();
+processImages().then(() => process.exit(0)).catch(err => {
+  console.error('Fatal error:', err);
+  process.exit(1);
+});
