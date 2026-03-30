@@ -8,6 +8,8 @@ export interface InvoiceLineItem {
   unit_price: number;
   line_total: number;
   sort_order: number;
+  frequency_term?: string;
+  term_multiplier?: number;
 }
 
 export interface Invoice {

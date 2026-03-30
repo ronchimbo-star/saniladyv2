@@ -491,7 +491,7 @@ export default function AdminInvoiceForm() {
                     />
                   </div>
 
-                  <div className="col-span-4 md:col-span-2">
+                  <div className="col-span-6 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Qty <span className="text-red-500">*</span>
                     </label>
@@ -506,7 +506,34 @@ export default function AdminInvoiceForm() {
                     />
                   </div>
 
-                  <div className="col-span-4 md:col-span-2">
+                  <div className="col-span-6 md:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Frequency / Term
+                    </label>
+                    <input
+                      type="text"
+                      value={item.frequency_term || ''}
+                      onChange={(e) => updateLineItem(index, 'frequency_term', e.target.value)}
+                      placeholder="e.g., 12 months"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                    />
+                  </div>
+
+                  <div className="col-span-6 md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Term Multiplier
+                    </label>
+                    <input
+                      type="number"
+                      value={item.term_multiplier || 1}
+                      onChange={(e) => updateLineItem(index, 'term_multiplier', e.target.value)}
+                      min="1"
+                      step="1"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                    />
+                  </div>
+
+                  <div className="col-span-6 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Unit Price <span className="text-red-500">*</span>
                     </label>
@@ -521,7 +548,7 @@ export default function AdminInvoiceForm() {
                     />
                   </div>
 
-                  <div className="col-span-4 md:col-span-2">
+                  <div className="col-span-6 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Total
                     </label>
