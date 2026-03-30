@@ -194,8 +194,9 @@ export const invoiceService = {
     if (error) throw error;
   },
 
-  formatCurrency(amount: number): string {
-    return `£${amount.toFixed(2)}`;
+  formatCurrency(amount: number | string): string {
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return `£${numAmount.toFixed(2)}`;
   },
 
   calculateLineTotal(quantity: number, unitPrice: number): number {

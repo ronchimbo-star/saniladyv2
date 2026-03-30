@@ -195,6 +195,7 @@ export default function AdminInvoiceForm() {
 
     const preview: InvoiceWithItems = {
       ...formData,
+      vat_rate: typeof formData.vat_rate === 'string' ? parseFloat(formData.vat_rate) : formData.vat_rate,
       id: id || 'preview',
       invoice_number: 'PREVIEW',
       subtotal,
