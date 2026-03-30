@@ -69,10 +69,14 @@ export default function InvoicePreview({ invoice, onClose, onDownload }: Invoice
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between gap-8">
                     <span className="font-medium">From</span>
-                    <span className="text-right">CIRCULAR HORIZONS INTERNATIONAL<br/>LTD t/a SaniLady</span>
+                    <span className="text-right">CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</span>
                   </div>
                   <div className="flex justify-between gap-8">
-                    <span className="font-medium">Date</span>
+                    <span className="font-medium">Invoice Number</span>
+                    <span>{invoice.invoice_number || 'PREVIEW'}</span>
+                  </div>
+                  <div className="flex justify-between gap-8">
+                    <span className="font-medium">Invoice Date</span>
                     <span>{new Date(invoice.issue_date).toLocaleDateString('en-GB')}</span>
                   </div>
                   {invoice.invoice_type === 'proforma' && invoice.valid_until && (
@@ -162,9 +166,7 @@ export default function InvoicePreview({ invoice, onClose, onDownload }: Invoice
 
             <div className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 text-center space-y-1">
               <p>CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</p>
-              <p>Company Registration: 15474713 | VAT: 460067173</p>
-              <p>Registered Address: 128 City Road, London, EC1V 2NX</p>
-              <p>Email: info@sanilady.co.uk | Phone: 0800 652 8668</p>
+              <p>Company Registration: 15474713 | VAT: 460067173 | Registered Address: 128 City Road, London, EC1V 2NX | Email: info@sanilady.co.uk | Phone: 0800 652 8668</p>
             </div>
           </div>
         </div>
