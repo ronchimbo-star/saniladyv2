@@ -31,6 +31,9 @@ const AdminServiceVisits = lazy(() => import('./pages/AdminServiceVisits'));
 const AdminServiceVisitForm = lazy(() => import('./pages/AdminServiceVisitForm'));
 const AdminWasteTransferNotes = lazy(() => import('./pages/AdminWasteTransferNotes'));
 const AdminWasteTransferNoteForm = lazy(() => import('./pages/AdminWasteTransferNoteForm'));
+const AdminInvoices = lazy(() => import('./pages/AdminInvoices'));
+const AdminInvoiceForm = lazy(() => import('./pages/AdminInvoiceForm'));
+const AdminInvoiceDetail = lazy(() => import('./pages/AdminInvoiceDetail'));
 const Contact = lazy(() => import('./pages/Contact'));
 const About = lazy(() => import('./pages/About'));
 const FAQ = lazy(() => import('./pages/FAQ'));
@@ -255,6 +258,38 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminWasteTransferNoteForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/invoices"
+              element={
+                <ProtectedRoute>
+                  <AdminInvoices />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/invoices/new"
+              element={
+                <ProtectedRoute>
+                  <AdminInvoiceForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/invoices/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminInvoiceDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/invoices/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminInvoiceForm />
                 </ProtectedRoute>
               }
             />

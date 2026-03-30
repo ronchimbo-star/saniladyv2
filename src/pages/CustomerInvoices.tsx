@@ -6,21 +6,22 @@ import { supabase } from '../lib/supabase';
 interface Invoice {
   id: string;
   invoice_number: string;
+  invoice_type: string;
   issue_date: string;
   due_date: string;
+  valid_until?: string;
   subtotal: number;
   vat_amount: number;
   total_amount: number;
   status: string;
   paid_date: string | null;
-  line_items: any[];
 }
 
 export default function CustomerInvoices() {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'paid' | 'overdue'>('all');
+  const [filter, setFilter] = useState<'all' | 'sent' | 'paid' | 'overdue'>('all');
 
   useEffect(() => {
     fetchInvoices();
@@ -38,7 +39,7 @@ export default function CustomerInvoices() {
 
       if (customerData) {
         const { data, error } = await supabase
-          .from('invoices')
+          .from('invoices_v2')
           .select('*')
           .eq('customer_id', customerData.id)
           .order('issue_date', { ascending: false });
@@ -62,20 +63,22 @@ export default function CustomerInvoices() {
     switch (status) {
       case 'paid':
         return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+      case 'draft':
+        return 'bg-gray-100 text-gray-800';
+      case 'sent':
+        return 'bg-blue-100 text-blue-800';
       case 'overdue':
         return 'bg-red-100 text-red-800';
       case 'cancelled':
         return 'bg-gray-100 text-gray-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-yellow-100 text-yellow-800';
     }
   };
 
   const getTotalOutstanding = () => {
     return invoices
-      .filter(inv => inv.status === 'pending' || inv.status === 'overdue')
+      .filter(inv => inv.status === 'sent' || inv.status === 'overdue')
       .reduce((sum, inv) => sum + Number(inv.total_amount), 0);
   };
 
@@ -146,14 +149,14 @@ export default function CustomerInvoices() {
                 All ({invoices.length})
               </button>
               <button
-                onClick={() => setFilter('pending')}
+                onClick={() => setFilter('sent')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filter === 'pending'
+                  filter === 'sent'
                     ? 'bg-pink-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                Pending ({invoices.filter(i => i.status === 'pending').length})
+                Sent ({invoices.filter(i => i.status === 'sent').length})
               </button>
               <button
                 onClick={() => setFilter('overdue')}

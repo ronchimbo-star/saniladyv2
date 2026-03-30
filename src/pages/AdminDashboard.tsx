@@ -273,6 +273,10 @@ export default function AdminDashboard() {
               <span>📝</span>
               <span>Waste Transfer Notes</span>
             </Link>
+            <Link to="/admin/invoices" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+              <span>💰</span>
+              <span>Invoices</span>
+            </Link>
             <Link to="/admin/news" className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
               <span>📰</span>
               <span>News Articles</span>
