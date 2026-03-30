@@ -103,7 +103,8 @@ export default function AdminInvoiceForm() {
           quantity: 1,
           unit_price: 0,
           line_total: 0,
-          sort_order: 0
+          sort_order: 0,
+          term_multiplier: 1
         }]);
       }
     } catch (error) {
@@ -122,7 +123,8 @@ export default function AdminInvoiceForm() {
       quantity: 1,
       unit_price: 0,
       line_total: 0,
-      sort_order: lineItems.length
+      sort_order: lineItems.length,
+      term_multiplier: 1
     }]);
   };
 
@@ -136,10 +138,11 @@ export default function AdminInvoiceForm() {
     const updated = [...lineItems];
     updated[index] = { ...updated[index], [field]: value };
 
-    if (field === 'quantity' || field === 'unit_price') {
+    if (field === 'quantity' || field === 'unit_price' || field === 'term_multiplier') {
       const quantity = field === 'quantity' ? parseFloat(value) || 0 : updated[index].quantity;
       const unitPrice = field === 'unit_price' ? parseFloat(value) || 0 : updated[index].unit_price;
-      updated[index].line_total = invoiceService.calculateLineTotal(quantity, unitPrice);
+      const termMultiplier = field === 'term_multiplier' ? parseFloat(value) || 1 : (updated[index].term_multiplier || 1);
+      updated[index].line_total = quantity * unitPrice * termMultiplier;
     }
 
     setLineItems(updated);
