@@ -61,22 +61,32 @@ export const invoiceService = {
   },
 
   async createInvoice(invoice: Invoice, lineItems: InvoiceLineItem[]): Promise<string> {
-    if (!invoice.invoice_number) {
-      invoice.invoice_number = await this.generateInvoiceNumber(invoice.invoice_type);
+    const insertData: any = { ...invoice };
+
+    if (!insertData.invoice_number) {
+      insertData.invoice_number = await this.generateInvoiceNumber(invoice.invoice_type);
     }
+
+    delete insertData.id;
+    delete insertData.created_at;
+    delete insertData.updated_at;
+    delete insertData.created_by;
 
     const { data: invoiceData, error: invoiceError } = await supabase
       .from('invoices_v2')
-      .insert(invoice)
+      .insert(insertData)
       .select()
       .single();
 
     if (invoiceError) throw invoiceError;
 
-    const itemsWithInvoiceId = lineItems.map(item => ({
-      ...item,
-      invoice_id: invoiceData.id
-    }));
+    const itemsWithInvoiceId = lineItems.map(item => {
+      const { id, invoice_id, ...itemData } = item as any;
+      return {
+        ...itemData,
+        invoice_id: invoiceData.id
+      };
+    });
 
     const { error: itemsError } = await supabase
       .from('invoice_line_items')
@@ -88,7 +98,12 @@ export const invoiceService = {
   },
 
   async updateInvoice(id: string, invoice: Partial<Invoice>): Promise<void> {
-    const { id: _, created_at, updated_at, created_by, invoice_number, ...updateData } = invoice as any;
+    const updateData: any = { ...invoice };
+    delete updateData.id;
+    delete updateData.created_at;
+    delete updateData.updated_at;
+    delete updateData.created_by;
+    delete updateData.invoice_number;
 
     const { error } = await supabase
       .from('invoices_v2')
