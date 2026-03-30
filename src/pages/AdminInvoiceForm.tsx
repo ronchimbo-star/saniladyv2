@@ -56,7 +56,8 @@ export default function AdminInvoiceForm() {
       quantity: 1,
       unit_price: 0,
       line_total: 0,
-      sort_order: 0
+      sort_order: 0,
+      term_multiplier: 1
     }
   ]);
 
