@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { invoiceService, Invoice, InvoiceLineItem } from '../lib/invoiceService';
+import { invoiceService, Invoice, InvoiceLineItem, InvoiceWithItems } from '../lib/invoiceService';
 import { supabase } from '../lib/supabase';
+import InvoicePreview from '../components/InvoicePreview';
 
 interface Customer {
   id: string;
@@ -18,6 +19,8 @@ export default function AdminInvoiceForm() {
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewInvoice, setPreviewInvoice] = useState<InvoiceWithItems | null>(null);
 
   const [formData, setFormData] = useState<Invoice>({
     invoice_type: 'proforma',
@@ -178,6 +181,29 @@ export default function AdminInvoiceForm() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePreview = () => {
+    const { subtotal, vatAmount, total } = calculateTotals();
+
+    const preview: InvoiceWithItems = {
+      ...formData,
+      id: id || 'preview',
+      invoice_number: 'PREVIEW',
+      subtotal,
+      vat_amount: vatAmount,
+      total_amount: total,
+      line_items: lineItems,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    setPreviewInvoice(preview);
+    setShowPreview(true);
+  };
+
+  const handleDownloadPDF = () => {
+    window.print();
   };
 
   const { subtotal, vatAmount, total } = calculateTotals();
@@ -583,6 +609,13 @@ export default function AdminInvoiceForm() {
             Cancel
           </button>
           <button
+            type="button"
+            onClick={handlePreview}
+            className="px-6 py-2 bg-[#ec008c] text-white rounded-md hover:bg-[#d0007a]"
+          >
+            Preview
+          </button>
+          <button
             type="submit"
             disabled={loading}
             className="px-6 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50"
@@ -591,6 +624,14 @@ export default function AdminInvoiceForm() {
           </button>
         </div>
       </form>
+
+      {showPreview && previewInvoice && (
+        <InvoicePreview
+          invoice={previewInvoice}
+          onClose={() => setShowPreview(false)}
+          onDownload={handleDownloadPDF}
+        />
+      )}
     </div>
   );
 }
