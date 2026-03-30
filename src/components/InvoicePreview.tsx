@@ -28,75 +28,76 @@ export default function InvoicePreview({ invoice, onClose, onDownload }: Invoice
           </div>
         </div>
 
-        <div className="p-8">
-          <div className="bg-white border border-gray-200 rounded-lg p-8">
-            <div className="flex justify-between items-start mb-8">
-              <div className="flex-1">
-                <div className="mb-6">
-                  <img
-                    src="/sanilady-logo-header.png"
-                    alt="SaniLady"
-                    className="h-12 mb-4"
-                  />
-                </div>
-                <div className="space-y-4">
-                  <div className="text-sm text-gray-600 space-y-0.5">
-                    <p className="font-medium">To</p>
-                    <p className="font-semibold text-gray-900">{invoice.billing_company_name}</p>
-                    <p>{invoice.billing_address_line_1}</p>
-                    {invoice.billing_address_line_2 && <p>{invoice.billing_address_line_2}</p>}
-                    <p>{invoice.billing_city}</p>
-                    <p>{invoice.billing_postcode}</p>
-                  </div>
+        <div className="p-8 print:p-12">
+          <div className="bg-white border border-gray-200 rounded-lg p-8 print:border-0 print:p-0">
+            <div className="flex items-center justify-between mb-6 print:mb-4">
+              <img
+                src="/sanilady-logo-header.png"
+                alt="SaniLady"
+                className="h-12 print:h-10"
+              />
+              <h1 className="text-4xl font-bold text-gray-900 print:text-3xl">
+                {invoice.invoice_type === 'proforma' ? 'Proforma Invoice' : 'Invoice'}
+              </h1>
+            </div>
 
-                  {invoice.service_location_name && (
-                    <div className="text-sm text-gray-600 space-y-0.5 pt-2 border-t border-gray-200">
-                      <p className="font-medium">Service Address</p>
-                      <p className="font-semibold text-gray-900">{invoice.service_location_name}</p>
-                      {invoice.service_address_line_1 && <p>{invoice.service_address_line_1}</p>}
-                      {invoice.service_address_line_2 && <p>{invoice.service_address_line_2}</p>}
-                      {invoice.service_city && <p>{invoice.service_city}</p>}
-                      {invoice.service_postcode && <p>{invoice.service_postcode}</p>}
-                    </div>
-                  )}
+            <div className="grid grid-cols-2 gap-8 mb-6 print:mb-4 print:gap-6 print:text-xs">
+              <div className="space-y-4 print:space-y-3">
+                <div className="text-sm print:text-xs text-gray-600 space-y-0.5">
+                  <p className="font-medium">To</p>
+                  <p className="font-semibold text-gray-900">{invoice.billing_company_name}</p>
+                  <p>{invoice.billing_address_line_1}</p>
+                  {invoice.billing_address_line_2 && <p>{invoice.billing_address_line_2}</p>}
+                  <p>{invoice.billing_city}</p>
+                  <p>{invoice.billing_postcode}</p>
                 </div>
+
+                {invoice.service_location_name && (
+                  <div className="text-sm print:text-xs text-gray-600 space-y-0.5 pt-2 border-t border-gray-200 print:pt-1">
+                    <p className="font-medium">Service Address</p>
+                    <p className="font-semibold text-gray-900">{invoice.service_location_name}</p>
+                    {invoice.service_address_line_1 && <p>{invoice.service_address_line_1}</p>}
+                    {invoice.service_address_line_2 && <p>{invoice.service_address_line_2}</p>}
+                    {invoice.service_city && <p>{invoice.service_city}</p>}
+                    {invoice.service_postcode && <p>{invoice.service_postcode}</p>}
+                  </div>
+                )}
               </div>
 
-              <div className="text-right">
-                <h1 className="text-4xl font-bold text-gray-900 mb-6">
-                  {invoice.invoice_type === 'proforma' ? 'Proforma Invoice' : 'Invoice'}
-                </h1>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between gap-8">
-                    <span className="font-medium">From</span>
-                    <span className="text-right">CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</span>
+              <div className="space-y-1 text-sm print:text-xs">
+                <div className="flex justify-between gap-4">
+                  <span className="font-medium">From</span>
+                  <span className="text-right">CIRCULAR HORIZONS<br />INTERNATIONAL LTD<br />t/a SaniLady</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="font-medium">Invoice Number</span>
+                  <span>{invoice.invoice_number || 'PREVIEW'}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="font-medium">Invoice Date</span>
+                  <span>{new Date(invoice.issue_date).toLocaleDateString('en-GB')}</span>
+                </div>
+                {invoice.invoice_type === 'proforma' && invoice.valid_until && (
+                  <div className="flex justify-between gap-4">
+                    <span className="font-medium">Valid Until</span>
+                    <span>{new Date(invoice.valid_until).toLocaleDateString('en-GB')}</span>
                   </div>
-                  <div className="flex justify-between gap-8">
-                    <span className="font-medium">Invoice Number</span>
-                    <span>{invoice.invoice_number || 'PREVIEW'}</span>
+                )}
+                {invoice.invoice_type === 'invoice' && invoice.due_date && (
+                  <div className="flex justify-between gap-4">
+                    <span className="font-medium">Due Date</span>
+                    <span>{new Date(invoice.due_date).toLocaleDateString('en-GB')}</span>
                   </div>
-                  <div className="flex justify-between gap-8">
-                    <span className="font-medium">Invoice Date</span>
-                    <span>{new Date(invoice.issue_date).toLocaleDateString('en-GB')}</span>
+                )}
+                {invoice.reference && (
+                  <div className="flex justify-between gap-4">
+                    <span className="font-medium">PO / Reference</span>
+                    <span>{invoice.reference}</span>
                   </div>
-                  {invoice.invoice_type === 'proforma' && invoice.valid_until && (
-                    <div className="flex justify-between gap-8">
-                      <span className="font-medium">Valid Until</span>
-                      <span>{new Date(invoice.valid_until).toLocaleDateString('en-GB')}</span>
-                    </div>
-                  )}
-                  {invoice.invoice_type === 'invoice' && invoice.due_date && (
-                    <div className="flex justify-between gap-8">
-                      <span className="font-medium">Due Date</span>
-                      <span>{new Date(invoice.due_date).toLocaleDateString('en-GB')}</span>
-                    </div>
-                  )}
-                  {invoice.reference && (
-                    <div className="flex justify-between gap-8">
-                      <span className="font-medium">Reference</span>
-                      <span>{invoice.reference}</span>
-                    </div>
-                  )}
+                )}
+                <div className="flex justify-between gap-4">
+                  <span className="font-medium">Payment terms</span>
+                  <span>7 days</span>
                 </div>
               </div>
             </div>

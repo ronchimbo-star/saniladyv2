@@ -143,83 +143,80 @@ export default function AdminInvoiceDetail() {
 
       <div className="bg-white shadow-lg rounded-lg overflow-hidden print:shadow-none print:rounded-none">
         <div className="p-8 print:p-12">
-          <div className="flex justify-between items-start mb-8">
-            <div className="flex-1">
-              <div className="mb-6">
-                <img
-                  src="/sanilady-logo-header.png"
-                  alt="SaniLady"
-                  className="h-12 mb-4"
-                />
-              </div>
-              <div className="space-y-4">
-                <div className="text-sm text-gray-600 space-y-0.5">
-                  <p className="font-medium">To</p>
-                  <p className="font-semibold text-gray-900">{invoice.billing_company_name}</p>
-                  <p>{invoice.billing_address_line_1}</p>
-                  {invoice.billing_address_line_2 && <p>{invoice.billing_address_line_2}</p>}
-                  <p>{invoice.billing_city}</p>
-                  <p>{invoice.billing_postcode}</p>
-                </div>
+          <div className="flex items-center justify-between mb-6 print:mb-4">
+            <img
+              src="/sanilady-logo-header.png"
+              alt="SaniLady"
+              className="h-12 print:h-10"
+            />
+            <h1 className="text-4xl font-bold text-gray-900 print:text-3xl">
+              {invoice.invoice_type === 'proforma' ? 'Proforma Invoice' : 'Invoice'}
+            </h1>
+          </div>
 
-                {invoice.service_location_name && (
-                  <div className="text-sm text-gray-600 space-y-0.5 pt-2 border-t border-gray-200">
-                    <p className="font-medium">Service Address</p>
-                    <p className="font-semibold text-gray-900">{invoice.service_location_name}</p>
-                    {invoice.service_address_line_1 && <p>{invoice.service_address_line_1}</p>}
-                    {invoice.service_address_line_2 && <p>{invoice.service_address_line_2}</p>}
-                    {invoice.service_city && <p>{invoice.service_city}</p>}
-                    {invoice.service_postcode && <p>{invoice.service_postcode}</p>}
-                  </div>
-                )}
+          <div className="grid grid-cols-2 gap-8 mb-6 print:mb-4 print:gap-6 print:text-xs">
+            <div className="space-y-4 print:space-y-3">
+              <div className="text-sm print:text-xs text-gray-600 space-y-0.5">
+                <p className="font-medium">To</p>
+                <p className="font-semibold text-gray-900">{invoice.billing_company_name}</p>
+                <p>{invoice.billing_address_line_1}</p>
+                {invoice.billing_address_line_2 && <p>{invoice.billing_address_line_2}</p>}
+                <p>{invoice.billing_city}</p>
+                <p>{invoice.billing_postcode}</p>
               </div>
+
+              {invoice.service_location_name && (
+                <div className="text-sm print:text-xs text-gray-600 space-y-0.5 pt-2 border-t border-gray-200 print:pt-1">
+                  <p className="font-medium">Service Address</p>
+                  <p className="font-semibold text-gray-900">{invoice.service_location_name}</p>
+                  {invoice.service_address_line_1 && <p>{invoice.service_address_line_1}</p>}
+                  {invoice.service_address_line_2 && <p>{invoice.service_address_line_2}</p>}
+                  {invoice.service_city && <p>{invoice.service_city}</p>}
+                  {invoice.service_postcode && <p>{invoice.service_postcode}</p>}
+                </div>
+              )}
             </div>
 
-            <div className="text-right">
-              <h1 className="text-4xl font-bold text-gray-900 mb-6">
-                {invoice.invoice_type === 'proforma' ? 'Proforma Invoice' : 'Invoice'}
-              </h1>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between gap-8">
-                  <span className="font-medium">From</span>
-                  <span className="text-right">CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</span>
+            <div className="space-y-1 text-sm print:text-xs">
+              <div className="flex justify-between gap-4">
+                <span className="font-medium">From</span>
+                <span className="text-right">CIRCULAR HORIZONS<br />INTERNATIONAL LTD<br />t/a SaniLady</span>
+              </div>
+              <div className="flex justify-between gap-4">
+                <span className="font-medium">Invoice Number</span>
+                <span>{invoice.invoice_number}</span>
+              </div>
+              <div className="flex justify-between gap-4">
+                <span className="font-medium">Invoice Date</span>
+                <span>{new Date(invoice.issue_date).toLocaleDateString('en-GB')}</span>
+              </div>
+              {invoice.reference && (
+                <div className="flex justify-between gap-4">
+                  <span className="font-medium">PO / Reference</span>
+                  <span>{invoice.reference}</span>
                 </div>
-                <div className="flex justify-between gap-8">
-                  <span className="font-medium">Invoice Number</span>
-                  <span>{invoice.invoice_number}</span>
-                </div>
-                <div className="flex justify-between gap-8">
-                  <span className="font-medium">Invoice Date</span>
-                  <span>{new Date(invoice.issue_date).toLocaleDateString('en-GB')}</span>
-                </div>
-                {invoice.reference && (
-                  <div className="flex justify-between gap-8">
-                    <span className="font-medium">PO / Reference</span>
-                    <span>{invoice.reference}</span>
-                  </div>
-                )}
-                <div className="flex justify-between gap-8">
-                  <span className="font-medium">Payment terms</span>
-                  <span>7 days</span>
-                </div>
+              )}
+              <div className="flex justify-between gap-4">
+                <span className="font-medium">Payment terms</span>
+                <span>7 days</span>
               </div>
             </div>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-6 print:mb-4">
             <table className="w-full border-t border-b border-gray-300">
               <thead>
                 <tr className="border-b border-gray-300">
-                  <th className="text-left py-3 text-sm font-semibold text-gray-900">
+                  <th className="text-left py-3 print:py-2 text-sm print:text-xs font-semibold text-gray-900">
                     Item
                   </th>
-                  <th className="text-right py-3 text-sm font-semibold text-gray-900 w-24">
+                  <th className="text-right py-3 print:py-2 text-sm print:text-xs font-semibold text-gray-900 w-24">
                     Rate
                   </th>
-                  <th className="text-right py-3 text-sm font-semibold text-gray-900 w-20">
+                  <th className="text-right py-3 print:py-2 text-sm print:text-xs font-semibold text-gray-900 w-20">
                     Qty
                   </th>
-                  <th className="text-right py-3 text-sm font-semibold text-gray-900 w-32">
+                  <th className="text-right py-3 print:py-2 text-sm print:text-xs font-semibold text-gray-900 w-32">
                     Gross
                   </th>
                 </tr>
@@ -227,16 +224,16 @@ export default function AdminInvoiceDetail() {
               <tbody>
                 {invoice.line_items.map((item, index) => (
                   <tr key={index} className="border-b border-gray-200">
-                    <td className="py-3 text-sm text-gray-700">
+                    <td className="py-3 print:py-2 text-sm print:text-xs text-gray-700">
                       <div className="whitespace-pre-line">{item.description}</div>
                     </td>
-                    <td className="py-3 text-sm text-gray-700 text-right">
+                    <td className="py-3 print:py-2 text-sm print:text-xs text-gray-700 text-right">
                       {invoiceService.formatCurrency(item.unit_price)}
                     </td>
-                    <td className="py-3 text-sm text-gray-700 text-right">
+                    <td className="py-3 print:py-2 text-sm print:text-xs text-gray-700 text-right">
                       {item.quantity}
                     </td>
-                    <td className="py-3 text-sm text-gray-700 text-right">
+                    <td className="py-3 print:py-2 text-sm print:text-xs text-gray-700 text-right">
                       {invoiceService.formatCurrency(item.line_total)}
                     </td>
                   </tr>
@@ -245,14 +242,14 @@ export default function AdminInvoiceDetail() {
             </table>
           </div>
 
-          <div className="border-t-2 border-gray-900 pt-4 mb-8">
+          <div className="border-t-2 border-gray-900 pt-4 mb-6 print:mb-4">
             <div className="flex justify-end">
               <div className="w-64">
-                <div className="flex justify-between text-2xl font-bold mb-1">
+                <div className="flex justify-between text-2xl print:text-xl font-bold mb-1">
                   <span>Total</span>
                   <span>{invoiceService.formatCurrency(invoice.total_amount)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm print:text-xs text-gray-600">
                   <span>Payment due</span>
                   <span>
                     {invoice.due_date
@@ -273,19 +270,19 @@ export default function AdminInvoiceDetail() {
             </div>
           </div>
 
-          <div className="border-t border-gray-300 pt-6 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Invoice note</h3>
-            <p className="text-xs text-gray-700 leading-relaxed">
+          <div className="border-t border-gray-300 pt-4 mb-4 print:pt-3 print:mb-3">
+            <h3 className="font-semibold text-gray-900 mb-2 print:text-xs print:mb-1">Invoice note</h3>
+            <p className="text-xs print:text-[10px] text-gray-700 leading-relaxed">
               SaniLady is a tradename of Circular Horizons International LTD. Co Reg. 15821509. All prices include VAT at the standard rate of 20%. VAT No. 232 8003 02.
             </p>
           </div>
 
-          <div className="border-t border-gray-300 pt-6 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">How to pay this invoice</h3>
-            <div className="space-y-1 text-sm text-gray-700">
+          <div className="border-t border-gray-300 pt-4 mb-4 print:pt-3 print:mb-3">
+            <h3 className="font-semibold text-gray-900 mb-2 print:text-xs print:mb-1">How to pay this invoice</h3>
+            <div className="space-y-1 text-sm print:text-xs print:space-y-0.5 text-gray-700">
               <p><span className="font-medium">Account name:</span> CIRCULAR HORIZONS INTERNATIONAL LTD</p>
               <p><span className="font-medium">Payment reference:</span> {invoice.invoice_number}</p>
-              <p className="font-medium mt-3">Details for UK payments:</p>
+              <p className="font-medium mt-2 print:mt-1">Details for UK payments:</p>
               <p><span className="font-medium">Account number:</span> 93187193</p>
               <p><span className="font-medium">Sort code:</span> 23-11-85</p>
               <p><span className="font-medium">Payment method:</span> BACS or FPS payments only</p>
@@ -293,15 +290,15 @@ export default function AdminInvoiceDetail() {
           </div>
 
           {invoice.invoice_type === 'proforma' && (
-            <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded print:bg-gray-50">
-              <p className="text-sm text-gray-700">
+            <div className="mt-6 print:mt-3 p-4 print:p-2 bg-yellow-50 border border-yellow-200 rounded print:bg-gray-50">
+              <p className="text-sm print:text-xs text-gray-700">
                 <strong>Note:</strong> This is a proforma invoice only. This is not a VAT invoice for
                 payment already made. Payment must be received in full before any services commence.
               </p>
             </div>
           )}
 
-          <div className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 text-center space-y-1">
+          <div className="mt-6 print:mt-3 pt-4 print:pt-2 border-t border-gray-200 text-xs print:text-[10px] text-gray-500 text-center space-y-1 print:space-y-0.5">
             <p>CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</p>
             <p>Company Registration: 15474713 | VAT: 460067173 | Registered Address: 128 City Road, London, EC1V 2NX | Email: info@sanilady.co.uk | Phone: 0800 652 8668</p>
           </div>

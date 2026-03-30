@@ -18,13 +18,25 @@ body {
 
 @media print {
   @page {
-    margin: 1cm;
-    size: A4;
+    margin: 0.8cm;
+    size: A4 portrait;
   }
 
-  body {
+  @page :first {
+    margin-top: 0.8cm;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+  }
+
+  * {
+    page-break-inside: avoid;
   }
 
   header,
@@ -49,7 +61,25 @@ body {
   }
 
   .print\:p-12 {
-    padding: 3rem !important;
+    padding: 1.5rem !important;
+  }
+
+  .print\:text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+
+  .print\:mb-4 {
+    margin-bottom: 1rem !important;
+  }
+
+  .print\:mb-6 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .print\:py-2 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
   }
 }
 
