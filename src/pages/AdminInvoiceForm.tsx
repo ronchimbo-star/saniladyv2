@@ -182,9 +182,10 @@ export default function AdminInvoiceForm() {
       }
 
       navigate('/admin/invoices');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving invoice:', error);
-      alert('Failed to save invoice');
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      alert(`Failed to save invoice: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
