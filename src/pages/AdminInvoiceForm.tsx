@@ -212,7 +212,16 @@ export default function AdminInvoiceForm() {
   };
 
   const handleDownloadPDF = () => {
-    window.print();
+    if (previewInvoice) {
+      const originalTitle = document.title;
+      document.title = `${previewInvoice.invoice_number} - ${previewInvoice.billing_company_name}`;
+
+      window.print();
+
+      setTimeout(() => {
+        document.title = originalTitle;
+      }, 100);
+    }
   };
 
   const { subtotal, vatAmount, total } = calculateTotals();

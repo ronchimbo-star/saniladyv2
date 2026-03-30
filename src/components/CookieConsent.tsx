@@ -24,7 +24,7 @@ export default function CookieConsent() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-4 border-pink-600 shadow-2xl z-50 animate-slide-up">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-4 border-pink-600 shadow-2xl z-50 animate-slide-up print:hidden">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex-1">

@@ -8,9 +8,9 @@ interface InvoicePreviewProps {
 
 export default function InvoicePreview({ invoice, onClose, onDownload }: InvoicePreviewProps) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 print:bg-transparent print:static print:p-0">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto print:max-w-none print:shadow-none print:rounded-none print:max-h-none">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center print:hidden">
           <h2 className="text-xl font-semibold text-gray-900">Invoice Preview</h2>
           <div className="flex gap-2">
             <button

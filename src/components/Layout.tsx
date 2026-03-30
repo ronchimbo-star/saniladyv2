@@ -69,7 +69,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </script>
         </Helmet>
       )}
-      <nav className="bg-white shadow-md">
+      <nav className="bg-white shadow-md print:hidden">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-24">
             <Link to={user ? '/dashboard' : '/'}>
@@ -274,7 +274,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <main>{children}</main>
 
-      <footer className="bg-[#2d1b69] text-white py-12 mt-12">
+      <footer className="bg-[#2d1b69] text-white py-12 mt-12 print:hidden">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>

@@ -28,7 +28,16 @@ export default function AdminInvoiceDetail() {
   };
 
   const handlePrint = () => {
-    window.print();
+    if (invoice) {
+      const originalTitle = document.title;
+      document.title = `${invoice.invoice_number} - ${invoice.billing_company_name}`;
+
+      window.print();
+
+      setTimeout(() => {
+        document.title = originalTitle;
+      }, 100);
+    }
   };
 
   const handleMarkAsPaid = async () => {
