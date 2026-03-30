@@ -166,6 +166,9 @@ export default function AdminInvoiceForm() {
 
       const invoiceData = {
         ...formData,
+        due_date: formData.due_date || undefined,
+        valid_until: formData.valid_until || undefined,
+        paid_date: formData.paid_date || undefined,
         subtotal,
         vat_amount: vatAmount,
         total_amount: total
