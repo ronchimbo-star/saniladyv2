@@ -143,13 +143,26 @@ export default function AdminInvoiceDetail() {
                   className="h-12 mb-4"
                 />
               </div>
-              <div className="text-sm text-gray-600 space-y-0.5">
-                <p className="font-medium">To</p>
-                <p className="font-semibold text-gray-900">{invoice.billing_company_name}</p>
-                <p>{invoice.billing_address_line_1}</p>
-                {invoice.billing_address_line_2 && <p>{invoice.billing_address_line_2}</p>}
-                <p>{invoice.billing_city}</p>
-                <p>{invoice.billing_postcode}</p>
+              <div className="space-y-4">
+                <div className="text-sm text-gray-600 space-y-0.5">
+                  <p className="font-medium">To</p>
+                  <p className="font-semibold text-gray-900">{invoice.billing_company_name}</p>
+                  <p>{invoice.billing_address_line_1}</p>
+                  {invoice.billing_address_line_2 && <p>{invoice.billing_address_line_2}</p>}
+                  <p>{invoice.billing_city}</p>
+                  <p>{invoice.billing_postcode}</p>
+                </div>
+
+                {invoice.service_location_name && (
+                  <div className="text-sm text-gray-600 space-y-0.5 pt-2 border-t border-gray-200">
+                    <p className="font-medium">Service Address</p>
+                    <p className="font-semibold text-gray-900">{invoice.service_location_name}</p>
+                    {invoice.service_address_line_1 && <p>{invoice.service_address_line_1}</p>}
+                    {invoice.service_address_line_2 && <p>{invoice.service_address_line_2}</p>}
+                    {invoice.service_city && <p>{invoice.service_city}</p>}
+                    {invoice.service_postcode && <p>{invoice.service_postcode}</p>}
+                  </div>
+                )}
               </div>
             </div>
 
