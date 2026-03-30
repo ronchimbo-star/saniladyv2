@@ -88,9 +88,11 @@ export const invoiceService = {
   },
 
   async updateInvoice(id: string, invoice: Partial<Invoice>): Promise<void> {
+    const { id: _, created_at, updated_at, created_by, invoice_number, ...updateData } = invoice as any;
+
     const { error } = await supabase
       .from('invoices_v2')
-      .update(invoice)
+      .update(updateData)
       .eq('id', id);
 
     if (error) throw error;
@@ -102,10 +104,13 @@ export const invoiceService = {
       .delete()
       .eq('invoice_id', invoiceId);
 
-    const itemsWithInvoiceId = lineItems.map(item => ({
-      ...item,
-      invoice_id: invoiceId
-    }));
+    const itemsWithInvoiceId = lineItems.map(item => {
+      const { id, ...itemData } = item as any;
+      return {
+        ...itemData,
+        invoice_id: invoiceId
+      };
+    });
 
     const { error } = await supabase
       .from('invoice_line_items')
