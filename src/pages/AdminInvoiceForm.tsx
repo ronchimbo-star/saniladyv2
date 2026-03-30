@@ -197,13 +197,13 @@ export default function AdminInvoiceForm() {
       ...formData,
       vat_rate: typeof formData.vat_rate === 'string' ? parseFloat(formData.vat_rate) : formData.vat_rate,
       id: id || 'preview',
-      invoice_number: 'PREVIEW',
+      invoice_number: formData.invoice_number || 'PREVIEW',
       subtotal,
       vat_amount: vatAmount,
       total_amount: total,
       line_items: lineItems,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: formData.created_at || new Date().toISOString(),
+      updated_at: formData.updated_at || new Date().toISOString()
     };
 
     setPreviewInvoice(preview);

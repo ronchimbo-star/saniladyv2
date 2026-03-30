@@ -173,21 +173,15 @@ export default function AdminInvoiceDetail() {
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between gap-8">
                   <span className="font-medium">From</span>
-                  <span className="text-right">CIRCULAR HORIZONS INTERNATIONAL<br/>LTD t/a SaniLady</span>
+                  <span className="text-right">CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</span>
                 </div>
                 <div className="flex justify-between gap-8">
-                  <span className="font-medium">Invoice number</span>
+                  <span className="font-medium">Invoice Number</span>
                   <span>{invoice.invoice_number}</span>
                 </div>
                 <div className="flex justify-between gap-8">
-                  <span className="font-medium">Invoice date</span>
-                  <span>
-                    {new Date(invoice.issue_date).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric'
-                    })}
-                  </span>
+                  <span className="font-medium">Invoice Date</span>
+                  <span>{new Date(invoice.issue_date).toLocaleDateString('en-GB')}</span>
                 </div>
                 {invoice.reference && (
                   <div className="flex justify-between gap-8">
@@ -298,9 +292,9 @@ export default function AdminInvoiceDetail() {
             </div>
           )}
 
-          <div className="mt-8 pt-6 border-t border-gray-300 text-xs text-gray-600">
-            <p>Trading address: SaniLady, Unit A 82 James Carter Road, Mildenhall, IP28 7DE</p>
-            <p>Registered company no. 15821509</p>
+          <div className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 text-center space-y-1">
+            <p>CIRCULAR HORIZONS INTERNATIONAL LTD t/a SaniLady</p>
+            <p>Company Registration: 15474713 | VAT: 460067173 | Registered Address: 128 City Road, London, EC1V 2NX | Email: info@sanilady.co.uk | Phone: 0800 652 8668</p>
           </div>
         </div>
       </div>
